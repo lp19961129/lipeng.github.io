@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现代Web API开发完全指南 - 个人博客</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 文章详情页特定样式 */
+        .post-content h2 {
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            color: #1565C0;
+        }
+        .post-content h3 {
+            color: #1976D2;
+            margin-top: 30px;
+        }
+        .post-content p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 20px;
+            padding-left: 30px;
+        }
+        .post-content li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .code-title {
+            background-color: #2196F3;
+            color: white;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .code-block pre {
+            margin: 0;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        .code-block code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .note {
+            background-color: #f0f8ff;
+            border-left: 4px solid #2196F3;
+            padding: 16px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+        .note-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #1565C0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 16px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+        .warning-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .api-concepts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .concept-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .concept-card:hover {
+            transform: translateY(-5px);
+        }
+        .concept-card h4 {
+            color: #1565C0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .concept-card i {
+            font-size: 24px;
+        }
+        .rest-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 25px 0;
+        }
+        .method-card {
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+        }
+        .method-card.get {
+            background-color: #4CAF50;
+        }
+        .method-card.post {
+            background-color: #2196F3;
+        }
+        .method-card.put {
+            background-color: #FF9800;
+        }
+        .method-card.delete {
+            background-color: #F44336;
+        }
+        .method-card.patch {
+            background-color: #9C27B0;
+        }
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        .post-tags .tag {
+            background-color: #e3f2fd;
+            color: #1976D2;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid #90caf9;
+        }
+        .post-tags .tag:hover {
+            background-color: #1976D2;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .post-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .post-nav-link {
+            color: #2196F3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .post-nav-link:hover {
+            color: #1565C0;
+            transform: translateX(5px);
+        }
+        .post-nav-link.previous:hover {
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="../index.html">
+                        <i class="fas fa-leaf"></i> 个人博客
+                    </a>
+                </div>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="../index.html" class="nav-link">首页</a></li>
+                        <li class="nav-item"><a href="../index.html#about" class="nav-link">关于我</a></li>
+                        <li class="nav-item"><a href="../index.html#blog" class="nav-link">博客</a></li>
+                        <li class="nav-item"><a href="../index.html#contact" class="nav-link">联系</a></li>
+                    </ul>
+                </nav>
+                <div class="header-right">
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-close" id="mobile-menu-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <ul class="mobile-nav-list">
+                <li class="mobile-nav-item"><a href="../index.html" class="mobile-nav-link">首页</a></li>
+                <li class="mobile-nav-item"><a href="../index.html#about" class="mobile-nav-link">关于我</a></li>
+                <li class="mobile-nav-item"><a href="../index.html#blog" class="mobile-nav-link">博客</a></li>
+                <li class="mobile-nav-item"><a href="../index.html#contact" class="mobile-nav-link">联系</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <section class="container">
+            <div class="post-section">
+                <article class="post">
+                    <div class="post-header">
+                        <h1 class="post-title">现代Web API开发完全指南</h1>
+                        <div class="post-meta">
+                            <span class="post-date"><i class="far fa-calendar-alt"></i> 2023-11-12</span>
+                            <span class="post-author"><i class="far fa-user"></i> 技术博主</span>
+                            <span class="post-category"><i class="far fa-folder"></i> API开发</span>
+                        </div>
+                        <div class="post-image">
+                            <img src="../images/blog-api.svg" alt="现代Web API开发完全指南" class="post-featured-image">
+                        </div>
+                    </div>
+
+                    <div class="post-content">
+                        <p>在当今的软件开发世界中，Web API已成为构建现代应用的核心基础设施。无论是前后端分离架构、移动应用开发，还是微服务架构，高质量的API设计和实现都至关重要。本文将全面介绍Web API开发的各个方面，从设计原则到实际实现，帮助你构建稳定、安全、高性能的API服务。</p>
+
+                        <h2>一、Web API基础概念</h2>
+
+                        <div class="api-concepts">
+                            <div class="concept-card">
+                                <h4><i class="fas fa-exchange-alt"></i> API定义</h4>
+                                <p>应用程序编程接口(API)是一组定义了软件组件如何交互的规范。Web API通过HTTP协议提供服务，使不同系统能够相互通信。</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-server"></i> RESTful API</h4>
+                                <p>符合REST架构风格的API，通过资源表示、HTTP方法和无状态交互，提供简洁、可扩展的服务。</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-code"></i> GraphQL API</h4>
+                                <p>Facebook开发的查询语言，允许客户端精确指定需要的数据，减少过度获取和多次请求的问题。</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-sync-alt"></i> WebSocket API</h4>
+                                <p>提供全双工通信通道，允许服务器主动向客户端推送数据，适用于实时应用场景。</p>
+                            </div>
+                        </div>
+
+                        <h3>1. RESTful API设计原则</h3>
+                        <ul>
+                            <li><strong>资源导向：</strong>将功能抽象为资源，每个资源有唯一的URL标识</li>
+                            <li><strong>无状态性：</strong>服务器不保存客户端状态，每个请求必须包含完整信息</li>
+                            <li><strong>统一接口：</strong>使用标准HTTP方法、状态码和内容协商</li>
+                            <li><strong>可缓存性：</strong>适当设置缓存头，提高性能</li>
+                            <li><strong>分层系统：</strong>客户端无法区分直接与最终服务器通信还是通过中间层</li>
+                        </ul>
+
+                        <h3>2. HTTP方法及其语义</h3>
+
+                        <div class="rest-methods">
+                            <div class="method-card get">
+                                <div class="method">GET</div>
+                                <div class="description">获取资源</div>
+                            </div>
+                            <div class="method-card post">
+                                <div class="method">POST</div>
+                                <div class="description">创建资源</div>
+                            </div>
+                            <div class="method-card put">
+                                <div class="method">PUT</div>
+                                <div class="description">更新资源</div>
+                            </div>
+                            <div class="method-card delete">
+                                <div class="method">DELETE</div>
+                                <div class="description">删除资源</div>
+                            </div>
+                            <div class="method-card patch">
+                                <div class="method">PATCH</div>
+                                <div class="description">部分更新</div>
+                            </div>
+                        </div>
+
+                        <h2>二、API设计最佳实践</h2>
+
+                        <h3>1. URL设计原则</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">RESTful URL示例</div>
+                            <pre><code># 推荐的URL设计
+GET    /api/users                  # 获取所有用户列表
+GET    /api/users/123              # 获取特定用户
+POST   /api/users                  # 创建新用户
+PUT    /api/users/123              # 更新特定用户
+DELETE /api/users/123              # 删除特定用户
+GET    /api/users/123/posts        # 获取用户的所有文章
+GET    /api/posts?userId=123       # 另一种获取用户文章的方式
+GET    /api/posts?sort=date&limit=10  # 获取文章列表，带排序和分页
+
+# 避免的URL设计
+GET    /api/getUsers               # 避免在URL中使用动词
+GET    /api/user/123               # 保持资源名称复数形式
+POST   /api/updateUser/123         # 使用HTTP方法表示操作，而不是URL</code></pre>
+                        </div>
+
+                        <h3>2. 请求和响应格式</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">JSON API示例</div>
+                            <pre><code>// 请求示例 (POST /api/users)
+{
+  "name": "张三",
+  "email": "zhangsan@example.com",
+  "role": "user",
+  "settings": {
+    "notifications": true,
+    "theme": "dark"
+  }
+}
+
+// 响应示例 (201 Created)
+{
+  "id": "123",
+  "name": "张三",
+  "email": "zhangsan@example.com",
+  "role": "user",
+  "createdAt": "2023-11-12T08:30:00Z",
+  "updatedAt": "2023-11-12T08:30:00Z",
+  "links": {
+    "self": "/api/users/123",
+    "posts": "/api/users/123/posts"
+  }
+}
+
+// 错误响应示例 (400 Bad Request)
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "请求数据验证失败",
+    "details": [
+      {
+        "field": "email",
+        "message": "无效的邮箱格式"
+      },
+      {
+        "field": "name",
+        "message": "名称不能为空"
+      }
+    ]
+  }
+}
+
+// 集合响应示例 (带分页)
+{
+  "data": [
+    {
+      "id": "1",
+      "name": "用户1",
+      "email": "user1@example.com"
+    },
+    {
+      "id": "2",
+      "name": "用户2",
+      "email": "user2@example.com"
+    }
+  ],
+  "meta": {
+    "total": 100,
+    "page": 1,
+    "perPage": 2,
+    "totalPages": 50
+  },
+  "links": {
+    "self": "/api/users?page=1&perPage=2",
+    "next": "/api/users?page=2&perPage=2",
+    "prev": null,
+    "first": "/api/users?page=1&perPage=2",
+    "last": "/api/users?page=50&perPage=2"
+  }
+}</code></pre>
+                        </div>
+
+                        <h3>3. 状态码的正确使用</h3>
+
+                        <ul>
+                            <li><strong>2xx 成功：</strong>
+                                <ul>
+                                    <li>200 OK - 请求成功</li>
+                                    <li>201 Created - 资源创建成功</li>
+                                    <li>204 No Content - 请求成功但没有内容返回</li>
+                                </ul>
+                            </li>
+                            <li><strong>3xx 重定向：</strong>
+                                <ul>
+                                    <li>301 Moved Permanently - 永久重定向</li>
+                                    <li>302 Found - 临时重定向</li>
+                                    <li>304 Not Modified - 资源未修改，使用缓存</li>
+                                </ul>
+                            </li>
+                            <li><strong>4xx 客户端错误：</strong>
+                                <ul>
+                                    <li>400 Bad Request - 请求数据错误</li>
+                                    <li>401 Unauthorized - 未授权，需要认证</li>
+                                    <li>403 Forbidden - 拒绝访问，权限不足</li>
+                                    <li>404 Not Found - 资源不存在</li>
+                                    <li>405 Method Not Allowed - HTTP方法不被允许</li>
+                                    <li>429 Too Many Requests - 请求频率过高</li>
+                                </ul>
+                            </li>
+                            <li><strong>5xx 服务器错误：</strong>
+                                <ul>
+                                    <li>500 Internal Server Error - 服务器内部错误</li>
+                                    <li>502 Bad Gateway - 网关错误</li>
+                                    <li>503 Service Unavailable - 服务不可用</li>
+                                    <li>504 Gateway Timeout - 网关超时</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <h2>三、Node.js API实现示例</h2>
+
+                        <h3>1. 使用Express构建RESTful API</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">基本Express API服务器</div>
+                            <pre><code>// server.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// 中间件
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// 模拟数据
+let users = [
+  { id: '1', name: '张三', email: 'zhangsan@example.com', role: 'admin' },
+  { id: '2', name: '李四', email: 'lisi@example.com', role: 'user' },
+  { id: '3', name: '王五', email: 'wangwu@example.com', role: 'user' }
+];
+
+// 路由
+
+// 获取所有用户
+app.get('/api/users', (req, res) => {
+  try {
+    // 支持分页和过滤
+    const { page = 1, limit = 10, role } = req.query;
+    let filteredUsers = [...users];
+    
+    if (role) {
+      filteredUsers = filteredUsers.filter(user => user.role === role);
+    }
+    
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + parseInt(limit);
+    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+    
+    res.status(200).json({
+      data: paginatedUsers,
+      meta: {
+        total: filteredUsers.length,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(filteredUsers.length / limit)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: {
+        code: 'SERVER_ERROR',
+        message: '服务器内部错误',
+        details: error.message
+      }
+    });
+  }
+});
+
+// 获取单个用户
+app.get('/api/users/:id', (req, res) => {
+  try {
+    const user = users.find(u => u.id === req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: `ID为 ${req.params.id} 的用户不存在`
+        }
+      });
+    }
+    
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({
+      error: {
+        code: 'SERVER_ERROR',
+        message: '服务器内部错误'
+      }
+    });
+  }
+});
+
+// 创建新用户
+app.post('/api/users', (req, res) => {
+  try {
+    const { name, email, role = 'user' } = req.body;
+    
+    // 基本验证
+    if (!name || !email) {
+      return res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: '名称和邮箱是必需的',
+          details: [
+            ...(!name ? [{ field: 'name', message: '名称不能为空' }] : []),
+            ...(!email ? [{ field: 'email', message: '邮箱不能为空' }] : [])
+          ]
+        }
+      });
+    }
+    
+    // 邮箱格式验证
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: '无效的邮箱格式',
+          details: [{ field: 'email', message: '请输入有效的邮箱地址' }]
+        }
+      });
+    }
+    
+    // 检查邮箱是否已存在
+    if (users.some(user => user.email === email)) {
+      return res.status(409).json({
+        error: {
+          code: 'DUPLICATE_EMAIL',
+          message: '邮箱已被注册'
+        }
+      });
+    }
+    
+    // 创建新用户
+    const newUser = {
+      id: Date.now().toString(),
+      name,
+      email,
+      role
+    };
+    
+    users.push(newUser);
+    
+    // 返回创建的用户和Location头
+    res.status(201)
+       .header('Location', `/api/users/${newUser.id}`)
+       .json(newUser);
+  } catch (error) {
+    res.status(500).json({
+      error: {
+        code: 'SERVER_ERROR',
+        message: '服务器内部错误'
+      }
+    });
+  }
+});
+
+// 更新用户
+app.put('/api/users/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, role } = req.body;
+    
+    const userIndex = users.findIndex(u => u.id === id);
+    
+    if (userIndex === -1) {
+      return res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: `ID为 ${id} 的用户不存在`
+        }
+      });
+    }
+    
+    // 验证数据
+    const errors = [];
+    if (name === '') errors.push({ field: 'name', message: '名称不能为空' });
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        errors.push({ field: 'email', message: '无效的邮箱格式' });
+      }
+      // 检查邮箱是否被其他用户使用
+      if (users.some((user, index) => user.email === email && index !== userIndex)) {
+        return res.status(409).json({
+          error: {
+            code: 'DUPLICATE_EMAIL',
+            message: '邮箱已被其他用户使用'
+          }
+        });
+      }
+    }
+    
+    if (errors.length > 0) {
+      return res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: '验证失败',
+          details: errors
+        }
+      });
+    }
+    
+    // 更新用户
+    users[userIndex] = {
+      ...users[userIndex],
+      name: name || users[userIndex].name,
+      email: email || users[userIndex].email,
+      role: role || users[userIndex].role
+    };
+    
+    res.status(200).json(users[userIndex]);
+  } catch (error) {
+    res.status(500).json({
+      error: {
+        code: 'SERVER_ERROR',
+        message: '服务器内部错误'
+      }
+    });
+  }
+});
+
+// 删除用户
+app.delete('/api/users/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const userIndex = users.findIndex(u => u.id === id);
+    
+    if (userIndex === -1) {
+      return res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: `ID为 ${id} 的用户不存在`
+        }
+      });
+    }
+    
+    // 删除用户
+    users.splice(userIndex, 1);
+    
+    // 返回204状态码，表示成功但无内容返回
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({
+      error: {
+        code: 'SERVER_ERROR',
+        message: '服务器内部错误'
+      }
+    });
+  }
+});
+
+// 健康检查端点
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 启动服务器
+app.listen(PORT, () => {
+  console.log(`服务器运行在 http://localhost:${PORT}`);
+});</code></pre>
+                        </div>
+
+                        <h3>2. 使用TypeScript和Express构建更健壮的API</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">TypeScript Express API示例</div>
+                            <pre><code>// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
+
+// src/models/User.ts
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+}
+
+// src/schemas/user.ts
+import Joi from 'joi';
+
+export const createUserSchema = Joi.object({
+  name: Joi.string().min(2).max(50).required(),
+  email: Joi.string().email().required(),
+  role: Joi.string().valid('admin', 'user').default('user')
+});
+
+export const updateUserSchema = Joi.object({
+  name: Joi.string().min(2).max(50),
+  email: Joi.string().email(),
+  role: Joi.string().valid('admin', 'user')
+}).min(1); // 至少需要一个字段
+
+// src/middleware/errorHandler.ts
+import { Request, Response, NextFunction } from 'express';
+
+export interface ErrorResponse {
+  error: {
+    code: string;
+    message: string;
+    details?: Array<{ field: string; message: string }>;
+  };
+}
+
+class CustomError extends Error {
+  statusCode: number;
+  details?: Array<{ field: string; message: string }>;
+
+  constructor(statusCode: number, message: string, details?: Array<{ field: string; message: string }>) {
+    super(message);
+    this.statusCode = statusCode;
+    this.details = details;
+    Object.setPrototypeOf(this, CustomError.prototype);
+  }
+}
+
+// 全局错误处理中间件
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
+  if (err instanceof CustomError) {
+    const errorResponse: ErrorResponse = {
+      error: {
+        code: err.name,
+        message: err.message,
+        details: err.details
+      }
+    };
+    res.status(err.statusCode).json(errorResponse);
+    return;
+  }
+
+  // 处理Joi验证错误
+  if (err.name === 'ValidationError') {
+    const errorResponse: ErrorResponse = {
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: '请求数据验证失败',
+        details: (err as any).details.map((detail: any) => ({
+          field: detail.path.join('.'),
+          message: detail.message
+        }))
+      }
+    };
+    res.status(400).json(errorResponse);
+    return;
+  }
+
+  // 未处理的错误
+  console.error('未处理的错误:', err);
+  const errorResponse: ErrorResponse = {
+    error: {
+      code: 'SERVER_ERROR',
+      message: '服务器内部错误'
+    }
+  };
+  res.status(500).json(errorResponse);
+};
+
+export { CustomError };
+
+// src/controllers/userController.ts
+import { Request, Response, NextFunction } from 'express';
+import Joi from 'joi';
+import { User } from '../models/User';
+import { CustomError } from '../middleware/errorHandler';
+import { createUserSchema, updateUserSchema } from '../schemas/user';
+
+// 模拟数据存储
+let users: User[] = [
+  { id: '1', name: '张三', email: 'zhangsan@example.com', role: 'admin' },
+  { id: '2', name: '李四', email: 'lisi@example.com', role: 'user' },
+  { id: '3', name: '王五', email: 'wangwu@example.com', role: 'user' }
+];
+
+// 获取所有用户
+export const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { page = '1', limit = '10', role } = req.query;
+    let filteredUsers = [...users];
+    
+    if (role && (role === 'admin' || role === 'user')) {
+      filteredUsers = filteredUsers.filter(user => user.role === role);
+    }
+    
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = startIndex + limitNum;
+    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+    
+    res.status(200).json({
+      data: paginatedUsers,
+      meta: {
+        total: filteredUsers.length,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(filteredUsers.length / limitNum)
+      },
+      links: {
+        self: `/api/users?page=${pageNum}&limit=${limitNum}${role ? `&role=${role}` : ''}`,
+        next: endIndex < filteredUsers.length 
+          ? `/api/users?page=${pageNum + 1}&limit=${limitNum}${role ? `&role=${role}` : ''}`
+          : null,
+        prev: pageNum > 1
+          ? `/api/users?page=${pageNum - 1}&limit=${limitNum}${role ? `&role=${role}` : ''}`
+          : null
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 获取单个用户
+export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const user = users.find(u => u.id === id);
+    
+    if (!user) {
+      throw new CustomError(404, `ID为 ${id} 的用户不存在`);
+    }
+    
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 创建用户
+export const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    // 验证请求数据
+    const { error, value } = createUserSchema.validate(req.body);
+    if (error) {
+      throw error;
+    }
+    
+    const { name, email, role } = value;
+    
+    // 检查邮箱是否已存在
+    if (users.some(user => user.email === email)) {
+      throw new CustomError(409, '邮箱已被注册');
+    }
+    
+    const newUser: User = {
+      id: Date.now().toString(),
+      name,
+      email,
+      role
+    };
+    
+    users.push(newUser);
+    
+    res.status(201)
+       .header('Location', `/api/users/${newUser.id}`)
+       .json(newUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 更新用户
+export const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.params;
+    
+    // 验证请求数据
+    const { error, value } = updateUserSchema.validate(req.body);
+    if (error) {
+      throw error;
+    }
+    
+    const userIndex = users.findIndex(u => u.id === id);
+    
+    if (userIndex === -1) {
+      throw new CustomError(404, `ID为 ${id} 的用户不存在`);
+    }
+    
+    // 检查邮箱是否被其他用户使用
+    if (value.email && users.some((user, index) => user.email === value.email && index !== userIndex)) {
+      throw new CustomError(409, '邮箱已被其他用户使用');
+    }
+    
+    // 更新用户
+    users[userIndex] = {
+      ...users[userIndex],
+      ...value
+    };
+    
+    res.status(200).json(users[userIndex]);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 删除用户
+export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.params;
+    
+    const userIndex = users.findIndex(u => u.id === id);
+    
+    if (userIndex === -1) {
+      throw new CustomError(404, `ID为 ${id} 的用户不存在`);
+    }
+    
+    users.splice(userIndex, 1);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+// src/routes/userRoutes.ts
+import express from 'express';
+import {
+  getUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser
+} from '../controllers/userController';
+
+const router = express.Router();
+
+router.get('/', getUsers);
+router.get('/:id', getUserById);
+router.post('/', createUser);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
+
+export default router;
+
+// src/server.ts
+import express from 'express';
+import cors from 'cors';
+import userRoutes from './routes/userRoutes';
+import { errorHandler } from './middleware/errorHandler';
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// 中间件
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 路由
+app.use('/api/users', userRoutes);
+
+// 健康检查
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 404处理
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+  (error as any).status = 404;
+  next(error);
+});
+
+// 错误处理中间件
+app.use(errorHandler);
+
+// 启动服务器
+app.listen(PORT, () => {
+  console.log(`服务器运行在 http://localhost:${PORT}`);
+});
+
+// package.json
+{
+  "name": "typescript-api",
+  "version": "1.0.0",
+  "description": "TypeScript Express API",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "joi": "^17.9.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.3",
+    "@types/joi": "^17.2.3",
+    "@types/node": "^20.4.2",
+    "jest": "^29.6.1",
+    "ts-jest": "^29.1.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
+  }
+}</code></pre>
+                        </div>
+
+                        <h2>四、API安全最佳实践</h2>
+
+                        <h3>1. 身份验证与授权</h3>
+                        <ul>
+                            <li><strong>使用OAuth 2.0或JWT：</strong>实现安全的身份验证</li>
+                            <li><strong>实现基于角色的访问控制(RBAC)：</strong>根据用户角色限制资源访问</li>
+                            <li><strong>密码安全：</strong>使用bcrypt等算法存储哈希后的密码，不要存储明文</li>
+                            <li><strong>HTTPS：</strong>始终使用HTTPS加密传输数据</li>
+                            <li><strong>安全头部：</strong>设置适当的安全相关HTTP头部</li>
+                        </ul>
+
+                        <div class="code-block">
+                            <div class="code-title">JWT身份验证中间件示例</div>
+                            <pre><code>const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+
+// 身份验证中间件
+const auth = async (req, res, next) => {
+  try {
+    // 从Authorization头部获取token
+    const token = req.header('Authorization').replace('Bearer ', '');
+    
+    // 验证token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // 查找用户并验证token是否有效
+    const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
+    
+    if (!user) {
+      throw new Error();
+    }
+    
+    // 将用户和token附加到请求对象
+    req.token = token;
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({
+      error: {
+        code: 'UNAUTHORIZED',
+        message: '请先登录'
+      }
+    });
+  }
+};
+
+// 角色验证中间件
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        error: {
+          code: 'FORBIDDEN',
+          message: '没有足够的权限执行此操作'
+        }
+      });
+    }
+    next();
+  };
+};
+
+// 路由中使用
+router.post('/api/admin/users', auth, authorize('admin'), createUser);
+router.put('/api/users/:id', auth, updateUser); // 所有认证用户都可以更新自己的资料</code></pre>
+                        </div>
+
+                        <h3>2. 防止常见安全威胁</h3>
+
+                        <div class="api-concepts">
+                            <div class="concept-card">
+                                <h4><i class="fas fa-shield-alt"></i> SQL注入</h4>
+                                <p>使用参数化查询或ORM，避免直接拼接SQL语句。</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-ban"></i> XSS攻击</h4>
+                                <p>在API响应中设置适当的Content-Type，在前端对用户输入进行验证和转义。</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-exchange-alt"></i> CSRF攻击</h4>
+                                <p>使用SameSite Cookie属性，实现CSRF令牌验证。</p>
+                            </div>
+                            <div class="concept-card">
+                                <h4><i class="fas fa-lock"></i> 敏感数据保护</h4>
+                                <p>加密存储敏感信息，API响应中避免返回密码等敏感数据。</p>
+                            </div>
+                        </div>
+
+                        <div class="warning">
+                            <div class="warning-title"><i class="fas fa-exclamation-triangle"></i> 安全提示</div>
+                            <p>不要在代码中硬编码密钥、密码等敏感信息。使用环境变量或安全的密钥管理服务来存储这些信息。</p>
+                        </div>
+
+                        <h2>五、API文档</h2>
+
+                        <h3>1. 使用Swagger/OpenAPI文档</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">使用Swagger记录Express API</div>
+                            <pre><code>const express = require('express');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const app = express();
+
+// Swagger配置
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: '用户管理API',
+      description: '用户管理系统的RESTful API文档',
+      version: '1.0.0',
+      contact: {
+        name: 'API支持',
+        email: 'support@example.com'
+      },
+      servers: [
+        { url: 'http://localhost:3000' }
+      ]
+    }
+  },
+  apis: ['./routes/*.js']
+};
+
+// 初始化Swagger规范
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+// 使用Swagger UI中间件
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// 在路由文件中添加Swagger注释
+/**
+ * @swagger
+ * /api/users: 
+ *  get:
+ *    summary: 获取用户列表
+ *    description: 获取所有用户的列表，支持分页和角色过滤
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *          default: 1
+ *        description: 页码
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *          default: 10
+ *        description: 每页数量
+ *      - in: query
+ *        name: role
+ *        schema:
+ *          type: string
+ *          enum: [admin, user]
+ *        description: 用户角色过滤
+ *    responses:
+ *      '200':
+ *        description: 成功
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                data:
+ *                  type: array
+ *                  items:
+ *                    $ref: '#/components/schemas/User'
+ *                meta:
+ *                  type: object
+ *                  properties:
+ *                    total:
+ *                      type: integer
+ *                    page:
+ *                      type: integer
+ *                    limit:
+ *                      type: integer
+ *                    totalPages:
+ *                      type: integer
+ */
+router.get('/api/users', getUsers);</code></pre>
+                        </div>
+
+                        <h3>2. API版本控制</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">API版本控制实现</div>
+                            <pre><code>// 方法1：URL路径版本控制 (推荐)
+const v1Routes = require('./v1/routes');
+const v2Routes = require('./v2/routes');
+
+app.use('/api/v1', v1Routes);
+app.use('/api/v2', v2Routes);
+
+// 方法2：请求头版本控制
+const apiVersionMiddleware = (req, res, next) => {
+  const version = req.headers['api-version'] || '1.0';
+  req.apiVersion = version;
+  next();
+};
+
+app.use(apiVersionMiddleware);
+
+// 方法3：内容协商版本控制
+app.get('/api/users', (req, res) => {
+  const acceptHeader = req.headers.accept || '';
+  
+  if (acceptHeader.includes('application/vnd.example.v2+json')) {
+    // 返回v2版本响应
+    res.json(v2Response);
+  } else {
+    // 默认返回v1版本响应
+    res.json(v1Response);
+  }
+});</code></pre>
+                        </div>
+
+                        <h2>六、API性能优化</h2>
+
+                        <h3>1. 数据库优化</h3>
+                        <ul>
+                            <li><strong>索引：</strong>为频繁查询的字段添加索引</li>
+                            <li><strong>分页：</strong>实现高效的分页查询，避免一次性返回大量数据</li>
+                            <li><strong>查询优化：</strong>使用投影减少返回字段，避免N+1查询问题</li>
+                            <li><strong>连接池：</strong>使用数据库连接池管理数据库连接</li>
+                        </ul>
+
+                        <h3>2. API缓存策略</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">Redis缓存实现</div>
+                            <pre><code>const redis = require('redis');
+const { promisify } = require('util');
+
+// 创建Redis客户端
+const redisClient = redis.createClient({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379
+});
+
+// 转换回调风格为Promise风格
+const getAsync = promisify(redisClient.get).bind(redisClient);
+const setAsync = promisify(redisClient.set).bind(redisClient);
+const delAsync = promisify(redisClient.del).bind(redisClient);
+
+// 缓存中间件
+const cache = (duration) => {
+  return async (req, res, next) => {
+    // 生成缓存键
+    const key = `cache:${req.originalUrl}`;
+    
+    try {
+      // 尝试从缓存获取数据
+      const cachedData = await getAsync(key);
+      
+      if (cachedData) {
+        // 缓存命中，直接返回
+        res.set('X-Cache', 'HIT');
+        return res.status(200).json(JSON.parse(cachedData));
+      }
+      
+      // 缓存未命中，继续处理请求
+      res.set('X-Cache', 'MISS');
+      
+      // 保存原始的res.json方法
+      const originalJson = res.json;
+      
+      // 重写res.json方法，在返回前缓存数据
+      res.json = (data) => {
+        // 只有GET请求才缓存
+        if (req.method === 'GET') {
+          // 设置缓存，duration秒后过期
+          redisClient.setex(key, duration, JSON.stringify(data));
+        }
+        
+        // 调用原始的json方法
+        return originalJson.call(res, data);
+      };
+      
+      next();
+    } catch (error) {
+      console.error('缓存错误:', error);
+      next();
+    }
+  };
+};
+
+// 使用缓存中间件
+router.get('/api/products', cache(300), getProducts); // 缓存5分钟
+
+// 更新/删除数据时清除相关缓存
+router.put('/api/products/:id', async (req, res, next) => {
+  try {
+    // 更新产品
+    const updatedProduct = await updateProduct(req.params.id, req.body);
+    
+    // 清除相关缓存
+    await delAsync(`cache:/api/products/${req.params.id}`);
+    await delAsync(`cache:/api/products`);
+    
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    next(error);
+  }
+});</code></pre>
+                        </div>
+
+                        <h3>3. 压缩和响应优化</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">启用GZIP压缩和响应优化</div>
+                            <pre><code>const express = require('express');
+const compression = require('compression');
+const helmet = require('helmet');
+const app = express();
+
+// 启用GZIP压缩
+app.use(compression());
+
+// 使用Helmet增强安全头部
+app.use(helmet());
+
+// 优化静态文件服务
+app.use(express.static('public', {
+  maxAge: '1y', // 静态文件缓存1年
+  etag: true,   // 启用ETag
+  lastModified: true
+}));
+
+// 示例：设置缓存控制头部
+app.get('/api/data', (req, res) => {
+  res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+  res.json(data);
+});
+
+// 流式响应大文件
+app.get('/api/large-data', (req, res) => {
+  res.set('Content-Type', 'application/json');
+  res.set('Transfer-Encoding', 'chunked');
+  
+  // 流式发送数据
+  const stream = createDataStream();
+  stream.pipe(res);
+});</code></pre>
+                        </div>
+
+                        <h2>七、API监控与日志</h2>
+
+                        <h3>1. 日志记录最佳实践</h3>
+
+                        <div class="code-block">
+                            <div class="code-title">使用Winston进行结构化日志记录</div>
+                            <pre><code>const winston = require('winston');
+const expressWinston = require('express-winston');
+
+// 创建日志记录器
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    // 控制台日志
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      )
+    }),
+    // 错误日志文件
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error'
+    }),
+    // 所有日志文件
+    new winston.transports.File({
+      filename: 'logs/combined.log'
+    })
+  ]
+});
+
+// Express请求日志中间件
+app.use(expressWinston.logger({
+  winstonInstance: logger,
+  meta: true,
+  msg: "HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms",
+  expressFormat: true,
+  colorize: false
+}));
+
+// 在应用中使用logger
+logger.info('应用启动');
+logger.error('发生错误', { error: error.message, stack: error.stack });
+logger.warn('警告信息');
+logger.debug('调试信息');
+
+// 自定义请求ID中间件
+const { v4: uuidv4 } = require('uuid');
+app.use((req, res, next) => {
+  req.requestId = uuidv4();
+  res.set('X-Request-ID', req.requestId);
+  next();
+});</code></pre>
+                        </div>
+
+                        <h3>2. API监控和分析</h3>
+                        <ul>
+                            <li><strong>关键指标监控：</strong>响应时间、错误率、请求量</li>
+                            <li><strong>警报系统：</strong>设置阈值触发警报</li>
+                            <li><strong>分布式追踪：</strong>使用Jaeger或Zipkin追踪请求链路</li>
+                            <li><strong>性能分析：</strong>识别瓶颈和优化机会</li>
+                        </ul>
+
+                        <h2>八、总结</h2>
+
+                        <p>构建高质量的Web API需要考虑设计、实现、安全、性能、文档等多个方面。本文介绍的最佳实践和代码示例应该能帮助你开始构建自己的API服务。记住，API设计是一个持续改进的过程，需要根据实际使用情况和用户反馈不断优化。</p>
+
+                        <p>关注API的一致性、可预测性和开发者体验，这些往往是区分优秀API和普通API的关键因素。同时，不要忽视安全性和性能，这两点对于生产环境中的API至关重要。</p>
+
+                        <div class="note">
+                            <div class="note-title"><i class="fas fa-lightbulb"></i> 最终建议</div>
+                            <p>从小规模开始，先构建核心功能，然后逐步添加高级特性。编写全面的测试，使用CI/CD流程确保代码质量，并且建立完善的监控系统，及时发现和解决问题。</p>
+                        </div>
+
+                        <!-- 文章标签 -->
+                        <div class="post-tags">
+                            <a href="#" class="tag"><i class="fas fa-tag"></i> Web API</a>
+                            <a href="#" class="tag"><i class="fas fa-tag"></i> RESTful</a>
+                            <a href="#" class="tag"><i class="fas fa-tag"></i> Node.js</a>
+                            <a href="#" class="tag"><i class="fas fa-tag"></i> Express</a>
+                            <a href="#" class="tag"><i class="fas fa-tag"></i> TypeScript</a>
+                            <a href="#" class="tag"><i class="fas fa-tag"></i> API安全</a>
+                        </div>
+
+                        <!-- 文章导航 -->
+                        <div class="post-navigation">
+                            <a href="frontend-testing-guide.html" class="post-nav-link previous">
+                                <i class="fas fa-arrow-left"></i> 上一篇: 前端测试完全指南：从单元测试到端到端测试
+                            </a>
+                            <a href="responsive-design-guide.html" class="post-nav-link next">
+                                下一篇: 响应式设计原则与实践 <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 侧边栏 -->
+                <aside class="post-sidebar">
+                    <!-- 作者信息 -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">关于作者</h3>
+                        <div class="author-bio">
+                            <img src="../images/author.svg" alt="作者头像" class="author-image">
+                            <h4 class="author-name">技术博主</h4>
+                            <p>全栈开发工程师，拥有丰富的Web API设计和开发经验，热衷于分享现代开发技术和最佳实践。</p>
+                            <div class="author-social">
+                                <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 相关文章 -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">相关文章</h3>
+                        <div class="related-posts">
+                            <div class="related-posts-grid">
+                                <div class="related-post">
+                                    <div class="related-post-image">
+                                        <a href="progressive-web-app-guide.html"><img src="../images/blog5.svg" alt="渐进式Web应用(PWA)开发指南"></a>
+                                    </div>
+                                    <div class="related-post-content">
+                                        <div class="related-post-date">2023-09-15</div>
+                                        <h4 class="related-post-title">
+                                            <a href="progressive-web-app-guide.html">渐进式Web应用(PWA)开发指南</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="related-post">
+                                    <div class="related-post-image">
+                                        <a href="web-accessibility-guide.html"><img src="../images/blog4.svg" alt="Web无障碍设计指南"></a>
+                                    </div>
+                                    <div class="related-post-content">
+                                        <div class="related-post-date">2023-09-05</div>
+                                        <h4 class="related-post-title">
+                                            <a href="web-accessibility-guide.html">Web无障碍设计指南</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- 评论区 -->
+            <div class="comment-section">
+                <h3>评论区</h3>
+                <div class="comment-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" placeholder="请输入您的姓名">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" placeholder="请输入您的邮箱">
+                        </div>
+                        <div class="form-group">
+                            <label for="comment">评论内容</label>
+                            <textarea id="comment" placeholder="请输入您的评论..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">提交评论</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <a href="../index.html">
+                        <i class="fas fa-leaf"></i> 个人博客
+                    </a>
+                </div>
+                <div class="footer-links">
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="../index.html#about">关于我</a></li>
+                        <li><a href="../index.html#blog">博客</a></li>
+                        <li><a href="../index.html#contact">联系</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 个人博客. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 移动端菜单
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+
+        // 返回顶部按钮
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('active');
+            } else {
+                backToTopButton.classList.remove('active');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+
+                // 关闭移动端菜单
+                if (mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            // 可以在这里添加页面加载完成后的动画效果
+            console.log('页面加载完成');
+        });
+    </script>
+</body>
+</html>
