@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- 背景圆形 -->
+  <circle cx="100" cy="100" r="90" fill="#4CAF50"/>
+  
+  <!-- 头部 -->
+  <circle cx="100" cy="80" r="45" fill="#FFCC80"/>
+  
+  <!-- 眼睛 -->
+  <circle cx="85" cy="70" r="8" fill="#333"/>
+  <circle cx="115" cy="70" r="8" fill="#333"/>
+  
+  <!-- 眉毛 -->
+  <path d="M75 60 Q85 55 95 60" stroke="#333" stroke-width="3" fill="none"/>
+  <path d="M125 60 Q115 55 105 60" stroke="#333" stroke-width="3" fill="none"/>
+  
+  <!-- 嘴巴 -->
+  <path d="M80 100 Q100 120 120 100" stroke="#333" stroke-width="3" fill="none"/>
+  
+  <!-- 头发 -->
+  <path d="M55 65 Q55 20 100 20 Q145 20 145 65" fill="#8D6E63"/>
+</svg>

@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript设计模式实战 - 个人博客</title>
+    <!-- 引入外部资源 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入自定义样式 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .blog-post-detail {
+            padding: 60px 0;
+        }
+        .blog-post-detail .container {
+            max-width: 800px;
+        }
+        .post-header {
+            margin-bottom: 40px;
+        }
+        .post-cover {
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .post-cover img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        .post-content {
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        .post-content h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.8rem;
+        }
+        .post-content h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        .post-content p {
+            margin-bottom: 20px;
+        }
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        .post-content li {
+            margin-bottom: 10px;
+        }
+        .post-content code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        .post-content pre {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .post-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        .pattern-box {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 4px;
+        }
+        .pattern-example {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        .pattern-pros-cons {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .pros,
+        .cons {
+            flex: 1;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .pros {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .cons {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .pros h4,
+        .cons h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .pros ul,
+        .cons ul {
+            margin-bottom: 0;
+        }
+        .pros i {
+            color: #28a745;
+        }
+        .cons i {
+            color: #dc3545;
+        }
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .post-tags .tag {
+            background-color: var(--light-bg);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .post-tags .tag:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .related-posts {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+        .related-posts h3 {
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .related-post {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .related-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        .related-post-image {
+            height: 160px;
+            overflow: hidden;
+        }
+        .related-post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .related-post:hover .related-post-image img {
+            transform: scale(1.05);
+        }
+        .related-post-content {
+            padding: 20px;
+        }
+        .related-post-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        .related-post-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .related-post-title a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .related-post-title a:hover {
+            color: var(--primary-color);
+        }
+        .comment-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+        .comment-section h3 {
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .comment-form {
+            margin-bottom: 40px;
+        }
+        .comment-form .form-group {
+            margin-bottom: 20px;
+        }
+        .comment-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .comment-form input:focus,
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .comment-form textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .post-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+        .post-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .post-nav-link:hover {
+            color: var(--primary-color);
+        }
+        .post-nav-link i {
+            font-size: 1.2rem;
+        }
+        .post-nav-link.previous {
+            flex-direction: row-reverse;
+        }
+        
+        /* 设计模式可视化示例 */
+        .pattern-visualization {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .pattern-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .diagram-box {
+            padding: 15px 25px;
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .diagram-arrow {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        .code-demo {
+            margin: 20px 0;
+        }
+        .code-demo-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .code-demo-button:hover {
+            background-color: #2980b9;
+        }
+        .code-demo-output {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            min-height: 50px;
+            font-family: monospace;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+            .pattern-pros-cons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar" id="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <i class="fas fa-leaf"></i> 个人博客
+                </a>
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../index.html#about">关于我</a></li>
+                    <li><a href="../index.html#blog" class="active">博客</a></li>
+                    <li><a href="../index.html#contact">联系</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 博客文章详情 -->
+    <section class="blog-post-detail">
+        <div class="container">
+            <article>
+                <!-- 文章头部 -->
+                <div class="post-header">
+                    <div class="post-cover">
+                        <img src="../images/blog5.svg" alt="JavaScript设计模式实战">
+                    </div>
+                    <div class="post-meta">
+                        <span><i class="far fa-calendar-alt"></i> 2023-09-20</span>
+                        <span><i class="far fa-folder"></i> JavaScript</span>
+                        <span><i class="far fa-eye"></i> 阅读量: 2876</span>
+                    </div>
+                    <h1 class="post-title">JavaScript设计模式实战</h1>
+                </div>
+
+                <!-- 文章内容 -->
+                <div class="post-content">
+                    <p>设计模式是软件设计中通用的、可重用的解决方案，用于解决在软件设计中出现的常见问题。在JavaScript开发中，理解和应用设计模式可以帮助我们编写更加模块化、可维护和可扩展的代码。本文将深入探讨JavaScript中常用的设计模式，包括它们的实现原理、应用场景以及优缺点分析，并通过丰富的实例帮助你在实际项目中灵活运用这些模式。</p>
+
+                    <h2>一、设计模式概述</h2>
+
+                    <h3>1. 什么是设计模式？</h3>
+                    <p>设计模式是在特定上下文中解决通用软件设计问题的可重用方案。它们是由经验丰富的软件开发人员总结出来的最佳实践，可以帮助我们避免常见的设计陷阱，并提高代码质量和开发效率。</p>
+
+                    <h3>2. 设计模式的分类</h3>
+                    <p>根据GoF（Gang of Four）的经典著作《设计模式：可复用面向对象软件的基础》，设计模式可以分为三大类：</p>
+
+                    <ul>
+                        <li><strong>创建型模式</strong>：关注对象的创建过程，包括单例模式、工厂模式、建造者模式、原型模式等</li>
+                        <li><strong>结构型模式</strong>：关注对象的组合与结构，包括适配器模式、装饰器模式、代理模式、外观模式等</li>
+                        <li><strong>行为型模式</strong>：关注对象之间的通信和职责分配，包括观察者模式、策略模式、命令模式、迭代器模式等</li>
+                    </ul>
+
+                    <h3>3. JavaScript中的设计模式特点</h3>
+                    <p>JavaScript是一门灵活的脚本语言，具有函数式编程和面向对象编程的双重特性。这使得JavaScript中实现设计模式时有其独特之处：</p>
+
+                    <ul>
+                        <li><strong>基于原型</strong>：JavaScript使用原型继承而非类继承</li>
+                        <li><strong>一等公民函数</strong>：函数可以作为参数传递、作为返回值、赋值给变量等</li>
+                        <li><strong>闭包</strong>：函数可以访问其外部作用域的变量</li>
+                        <li><strong>动态类型</strong>：对象可以在运行时添加属性和方法</li>
+                    </ul>
+
+                    <h2>二、创建型模式</h2>
+
+                    <h3>1. 单例模式（Singleton Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>单例模式</h4>
+                        <p>确保一个类只有一个实例，并提供一个全局访问点。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// ES5实现
+const Singleton = (function() {
+  let instance;
+  
+  function createInstance() {
+    // 这里是实例的具体实现
+    const object = new Object({
+      name: "单例实例",
+      getData: function() {
+        return "这是单例的数据";
+      }
+    });
+    return object;
+  }
+  
+  return {
+    getInstance: function() {
+      if (!instance) {
+        instance = createInstance();
+      }
+      return instance;
+    }
+  };
+})();
+
+// 使用
+const instance1 = Singleton.getInstance();
+const instance2 = Singleton.getInstance();
+console.log(instance1 === instance2); // true
+
+// ES6实现
+class SingletonClass {
+  constructor() {
+    if (!SingletonClass.instance) {
+      this.name = "单例实例";
+      SingletonClass.instance = this;
+    }
+    return SingletonClass.instance;
+  }
+  
+  getData() {
+    return "这是单例的数据";
+  }
+}
+
+const instanceA = new SingletonClass();
+const instanceB = new SingletonClass();
+console.log(instanceA === instanceB); // true</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>管理全局状态（如应用配置、用户会话）</li>
+                        <li>数据库连接池</li>
+                        <li>日志记录器</li>
+                        <li>模态框、对话框等UI组件</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>确保全局只有一个实例，节省资源</li>
+                                <li>提供集中管理的访问点</li>
+                                <li>避免对同一资源的重复访问</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>违反单一职责原则</li>
+                                <li>隐藏了依赖关系，降低了代码可测试性</li>
+                                <li>可能导致模块间的紧耦合</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>2. 工厂模式（Factory Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>工厂模式</h4>
+                        <p>定义一个创建对象的接口，但由子类决定实例化的类。工厂方法让类的实例化推迟到子类中进行。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 简单工厂模式
+function AnimalFactory() {}
+
+AnimalFactory.createAnimal = function(type) {
+  let animal;
+  
+  switch(type) {
+    case 'dog':
+      animal = new Dog();
+      break;
+    case 'cat':
+      animal = new Cat();
+      break;
+    case 'bird':
+      animal = new Bird();
+      break;
+    default:
+      throw new Error('不支持的动物类型');
+  }
+  
+  return animal;
+};
+
+// 产品类
+function Dog() {
+  this.type = 'dog';
+  this.sound = '汪汪';
+}
+
+Dog.prototype.makeSound = function() {
+  return this.sound;
+};
+
+function Cat() {
+  this.type = 'cat';
+  this.sound = '喵喵';
+}
+
+Cat.prototype.makeSound = function() {
+  return this.sound;
+};
+
+function Bird() {
+  this.type = 'bird';
+  this.sound = '叽叽';
+}
+
+Bird.prototype.makeSound = function() {
+  return this.sound;
+};
+
+// 使用
+const dog = AnimalFactory.createAnimal('dog');
+const cat = AnimalFactory.createAnimal('cat');
+console.log(dog.makeSound()); // 汪汪
+console.log(cat.makeSound()); // 喵喵
+
+// ES6实现工厂方法模式
+class VehicleFactory {
+  createVehicle() {
+    throw new Error('子类必须实现createVehicle方法');
+  }
+}
+
+class CarFactory extends VehicleFactory {
+  createVehicle() {
+    return new Car();
+  }
+}
+
+class TruckFactory extends VehicleFactory {
+  createVehicle() {
+    return new Truck();
+  }
+}
+
+class Car {
+  drive() {
+    return 'Car driving...';
+  }
+}
+
+class Truck {
+  drive() {
+    return 'Truck driving...';
+  }
+}
+
+// 使用
+const carFactory = new CarFactory();
+const truckFactory = new TruckFactory();
+const car = carFactory.createVehicle();
+const truck = truckFactory.createVehicle();
+console.log(car.drive()); // Car driving...
+console.log(truck.drive()); // Truck driving...</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>创建对象时需要根据不同条件创建不同类型的对象</li>
+                        <li>对象的创建逻辑比较复杂，需要封装</li>
+                        <li>希望将对象的创建与使用分离</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>封装了对象的创建逻辑，降低了耦合</li>
+                                <li>提供了创建对象的统一接口</li>
+                                <li>便于扩展新类型的对象</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>增加了系统的复杂度</li>
+                                <li>需要为每种产品创建对应的工厂类</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pattern-visualization">
+                        <h4>工厂模式示意图</h4>
+                        <div class="pattern-diagram">
+                            <div class="diagram-box">客户端</div>
+                            <span class="diagram-arrow">→</span>
+                            <div class="diagram-box">工厂</div>
+                            <span class="diagram-arrow">→</span>
+                            <div class="diagram-box">产品1</div>
+                            <div class="diagram-box">产品2</div>
+                            <div class="diagram-box">产品3</div>
+                        </div>
+                    </div>
+
+                    <h3>3. 建造者模式（Builder Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>建造者模式</h4>
+                        <p>将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 建造者模式实现
+class ComputerBuilder {
+  constructor() {
+    this.reset();
+  }
+  
+  reset() {
+    this.computer = {
+      CPU: '',
+      RAM: '',
+      storage: '',
+      GPU: '',
+      OS: ''
+    };
+    return this;
+  }
+  
+  setCPU(cpu) {
+    this.computer.CPU = cpu;
+    return this;
+  }
+  
+  setRAM(ram) {
+    this.computer.RAM = ram;
+    return this;
+  }
+  
+  setStorage(storage) {
+    this.computer.storage = storage;
+    return this;
+  }
+  
+  setGPU(gpu) {
+    this.computer.GPU = gpu;
+    return this;
+  }
+  
+  setOS(os) {
+    this.computer.OS = os;
+    return this;
+  }
+  
+  build() {
+    const result = { ...this.computer };
+    this.reset();
+    return result;
+  }
+}
+
+// 使用
+const builder = new ComputerBuilder();
+
+// 构建游戏电脑
+const gamingComputer = builder
+  .setCPU('Intel Core i9')
+  .setRAM('32GB DDR5')
+  .setStorage('2TB SSD')
+  .setGPU('NVIDIA RTX 4090')
+  .setOS('Windows 11')
+  .build();
+
+// 构建办公电脑
+const officeComputer = builder
+  .setCPU('Intel Core i5')
+  .setRAM('16GB DDR4')
+  .setStorage('512GB SSD')
+  .setOS('Windows 10')
+  .build();
+
+console.log(gamingComputer);
+console.log(officeComputer);</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>创建复杂对象，其构建步骤稳定，但构建的内容可变</li>
+                        <li>需要隔离复杂对象的构建和表示</li>
+                        <li>需要通过相同的构建过程创建不同的表示</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>分离了复杂对象的构建和表示</li>
+                                <li>可以通过相同的构建过程创建不同的表示</li>
+                                <li>提供了更好的控制构建过程</li>
+                                <li>支持链式调用，代码更加简洁</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>增加了代码的复杂性</li>
+                                <li>需要额外的Builder类</li>
+                                <li>仅适用于创建复杂对象</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>4. 原型模式（Prototype Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>原型模式</h4>
+                        <p>用原型实例指定创建对象的种类，并且通过复制这些原型创建新的对象。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 原型模式实现
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+Person.prototype.clone = function() {
+  return new Person(this.name, this.age);
+};
+
+// 使用
+const john = new Person('John', 30);
+const johnClone = john.clone();
+console.log(johnClone.name); // John
+console.log(johnClone.age); // 30
+console.log(johnClone === john); // false
+
+// ES6实现
+class Employee {
+  constructor(name, position, salary) {
+    this.name = name;
+    this.position = position;
+    this.salary = salary;
+  }
+  
+  clone() {
+    return new Employee(this.name, this.position, this.salary);
+  }
+  
+  // 深拷贝方法
+  deepClone() {
+    return JSON.parse(JSON.stringify(this));
+  }
+}
+
+// 使用
+const manager = new Employee('Alice', 'Manager', 8000);
+const managerClone = manager.clone();
+
+// JavaScript内置的Object.create方法
+const prototype = {
+  greet: function() {
+    return `Hello, my name is ${this.name}`;
+  }
+};
+
+const person1 = Object.create(prototype);
+person1.name = 'Bob';
+const person2 = Object.create(prototype);
+person2.name = 'Charlie';
+
+console.log(person1.greet()); // Hello, my name is Bob
+console.log(person2.greet()); // Hello, my name is Charlie</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>当创建新对象的成本较高时</li>
+                        <li>需要创建多个相似对象时</li>
+                        <li>对象的初始化需要依赖于一些动态变化的输入</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>避免创建新的类层次结构</li>
+                                <li>可以动态添加或修改原型对象的属性和方法</li>
+                                <li>复制对象比创建新对象更高效</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>深拷贝可能会很复杂</li>
+                                <li>原型中的引用类型属性会被共享</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>三、结构型模式</h2>
+
+                    <h3>1. 适配器模式（Adapter Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>适配器模式</h4>
+                        <p>将一个类的接口转换成客户希望的另外一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 适配器模式实现
+// 旧的API（需要适配的类）
+class OldCalculator {
+  operations(a, b, operation) {
+    switch(operation) {
+      case 'add': return a + b;
+      case 'subtract': return a - b;
+      default: return NaN;
+    }
+  }
+}
+
+// 新的API（目标接口）
+class NewCalculator {
+  add(a, b) {
+    return a + b;
+  }
+  
+  subtract(a, b) {
+    return a - b;
+  }
+}
+
+// 适配器
+class CalculatorAdapter {
+  constructor() {
+    this.oldCalculator = new OldCalculator();
+  }
+  
+  add(a, b) {
+    return this.oldCalculator.operations(a, b, 'add');
+  }
+  
+  subtract(a, b) {
+    return this.oldCalculator.operations(a, b, 'subtract');
+  }
+}
+
+// 使用
+const adapter = new CalculatorAdapter();
+console.log(adapter.add(5, 3)); // 8
+console.log(adapter.subtract(10, 4)); // 6
+
+// 函数式适配器
+const oldAPI = {
+  getWeatherData: function(location, callback) {
+    // 假设这是一个使用回调的旧API
+    setTimeout(() => {
+      callback(null, { temperature: 25, humidity: 60 });
+    }, 1000);
+  }
+};
+
+// 适配器将回调风格转换为Promise风格
+const weatherAPIAdapter = {
+  getWeatherData: function(location) {
+    return new Promise((resolve, reject) => {
+      oldAPI.getWeatherData(location, (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+};
+
+// 使用适配器
+async function getWeather() {
+  try {
+    const data = await weatherAPIAdapter.getWeatherData('北京');
+    console.log(data); // { temperature: 25, humidity: 60 }
+  } catch (error) {
+    console.error(error);
+  }
+}</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>系统需要使用现有的类，但此类的接口不符合系统的需要</li>
+                        <li>希望复用一些已经存在的类，但是接口与复用环境要求不一致</li>
+                        <li>在开发一个系统时，需要调用一个外部组件或库，但它的接口与我们的系统不兼容</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>可以让任何两个没有关联的类一起运行</li>
+                                <li>提高了类的复用性</li>
+                                <li>增加了类的透明度</li>
+                                <li>灵活性好</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>过多地使用适配器，会使系统非常零乱</li>
+                                <li>增加了代码的复杂性</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="code-demo">
+                        <h4>适配器模式演示</h4>
+                        <button class="code-demo-button" id="adapterDemo">运行适配器演示</button>
+                        <div class="code-demo-output" id="adapterOutput"></div>
+                    </div>
+
+                    <h3>2. 装饰器模式（Decorator Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>装饰器模式</h4>
+                        <p>动态地给一个对象添加一些额外的职责。就增加功能来说，装饰器模式比生成子类更为灵活。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 装饰器模式实现
+// 基础组件
+class Coffee {
+  cost() {
+    return 5;
+  }
+  
+  description() {
+    return '普通咖啡';
+  }
+}
+
+// 装饰器基类
+class CoffeeDecorator {
+  constructor(coffee) {
+    this.coffee = coffee;
+  }
+  
+  cost() {
+    return this.coffee.cost();
+  }
+  
+  description() {
+    return this.coffee.description();
+  }
+}
+
+// 具体装饰器 - 牛奶
+class Milk extends CoffeeDecorator {
+  cost() {
+    return this.coffee.cost() + 1;
+  }
+  
+  description() {
+    return this.coffee.description() + ', 加牛奶';
+  }
+}
+
+// 具体装饰器 - 糖
+class Sugar extends CoffeeDecorator {
+  cost() {
+    return this.coffee.cost() + 0.5;
+  }
+  
+  description() {
+    return this.coffee.description() + ', 加糖';
+  }
+}
+
+// 具体装饰器 - 巧克力
+class Chocolate extends CoffeeDecorator {
+  cost() {
+    return this.coffee.cost() + 2;
+  }
+  
+  description() {
+    return this.coffee.description() + ', 加巧克力';
+  }
+}
+
+// 使用
+let myCoffee = new Coffee();
+console.log(myCoffee.description()); // 普通咖啡
+console.log(myCoffee.cost()); // 5
+
+// 加牛奶
+myCoffee = new Milk(myCoffee);
+console.log(myCoffee.description()); // 普通咖啡, 加牛奶
+console.log(myCoffee.cost()); // 6
+
+// 再加糖
+myCoffee = new Sugar(myCoffee);
+console.log(myCoffee.description()); // 普通咖啡, 加牛奶, 加糖
+console.log(myCoffee.cost()); // 6.5
+
+// JavaScript函数式装饰器
+function logExecution(target, propertyKey, descriptor) {
+  const originalMethod = descriptor.value;
+  
+  descriptor.value = function(...args) {
+    console.log(`Executing ${propertyKey} with args: ${args.join(', ')}`);
+    const result = originalMethod.apply(this, args);
+    console.log(`Execution of ${propertyKey} returned: ${result}`);
+    return result;
+  };
+  
+  return descriptor;
+}
+
+class Calculator {
+  @logExecution
+  add(a, b) {
+    return a + b;
+  }
+}
+
+const calc = new Calculator();
+calc.add(2, 3);
+
+// 函数式装饰器另一种实现
+function withErrorHandling(func) {
+  return function(...args) {
+    try {
+      return func.apply(this, args);
+    } catch (error) {
+      console.error('Error occurred:', error);
+      return null;
+    }
+  };
+}
+
+function divide(a, b) {
+  if (b === 0) {
+    throw new Error('Division by zero');
+  }
+  return a / b;
+}
+
+const safeDivide = withErrorHandling(divide);
+console.log(safeDivide(10, 2)); // 5
+console.log(safeDivide(10, 0)); // null</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>需要动态地给一个对象添加功能，这些功能可以动态地被撤销</li>
+                        <li>需要给一个对象增加一些基本功能的扩展，而又不希望通过继承增加子类来实现</li>
+                        <li>当不能采用生成子类的方法进行扩充时</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>比继承更灵活，可以动态添加功能</li>
+                                <li>可以组合多个装饰器，实现不同的功能组合</li>
+                                <li>遵循开闭原则</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>装饰器的组合可能会导致过多的小对象</li>
+                                <li>增加了系统的复杂性</li>
+                                <li>调试困难，因为每个装饰器都可能修改行为</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>3. 代理模式（Proxy Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>代理模式</h4>
+                        <p>为其他对象提供一种代理以控制对这个对象的访问。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 代理模式实现
+// 主题接口
+class Subject {
+  request() {
+    throw new Error('方法必须被子类实现');
+  }
+}
+
+// 真实主题
+class RealSubject extends Subject {
+  request() {
+    console.log('真实主题处理请求');
+    return '真实数据';
+  }
+}
+
+// 代理
+class ProxySubject extends Subject {
+  constructor() {
+    super();
+    this.realSubject = null;
+  }
+  
+  request() {
+    // 延迟初始化
+    if (!this.realSubject) {
+      console.log('创建真实主题对象');
+      this.realSubject = new RealSubject();
+    }
+    
+    // 前置处理
+    console.log('代理预处理请求');
+    
+    // 调用真实主题
+    const result = this.realSubject.request();
+    
+    // 后置处理
+    console.log('代理后处理请求');
+    
+    return result;
+  }
+}
+
+// 使用
+const proxy = new ProxySubject();
+console.log(proxy.request());
+console.log(proxy.request()); // 第二次调用不会再创建真实主题
+
+// JavaScript内置的Proxy对象
+const target = {
+  name: '张三',
+  age: 30,
+  salary: 10000
+};
+
+const handler = {
+  // 获取属性值的拦截器
+  get: function(target, prop, receiver) {
+    console.log(`访问属性: ${prop}`);
+    
+    // 保护敏感属性
+    if (prop === 'salary') {
+      return '无权访问';
+    }
+    
+    return Reflect.get(target, prop, receiver);
+  },
+  
+  // 设置属性值的拦截器
+  set: function(target, prop, value, receiver) {
+    console.log(`设置属性: ${prop} = ${value}`);
+    
+    // 验证年龄
+    if (prop === 'age' && (value < 0 || value > 150)) {
+      throw new Error('年龄必须在0到150之间');
+    }
+    
+    return Reflect.set(target, prop, value, receiver);
+  },
+  
+  // 拦截函数调用
+  apply: function(target, thisArg, argumentsList) {
+    console.log(`调用函数，参数: ${argumentsList.join(', ')}`);
+    return Reflect.apply(target, thisArg, argumentsList);
+  }
+};
+
+const proxyObj = new Proxy(target, handler);
+console.log(proxyObj.name); // 访问属性: name, 输出: 张三
+console.log(proxyObj.salary); // 访问属性: salary, 输出: 无权访问
+
+proxyObj.age = 35; // 设置属性: age = 35
+// proxyObj.age = 200; // 会抛出错误
+
+// 缓存代理示例
+function createExpensiveCalculator() {
+  const cache = {};
+  
+  return {
+    add: function(a, b) {
+      const key = `add_${a}_${b}`;
+      if (key in cache) {
+        console.log('从缓存获取结果');
+        return cache[key];
+      }
+      
+      console.log('计算结果并存入缓存');
+      const result = a + b; // 这里可以是更复杂的计算
+      cache[key] = result;
+      return result;
+    }
+  };
+}
+
+const calculator = createExpensiveCalculator();
+console.log(calculator.add(5, 3)); // 计算结果并存入缓存, 输出: 8
+console.log(calculator.add(5, 3)); // 从缓存获取结果, 输出: 8</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>远程代理：为一个位于不同地址空间的对象提供一个本地代理</li>
+                        <li>虚拟代理：根据需要创建开销很大的对象</li>
+                        <li>保护代理：控制对原始对象的访问权限</li>
+                        <li>缓存代理：为开销大的操作结果提供缓存</li>
+                        <li>智能引用：在访问对象时执行一些附加操作</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>可以在不修改原始对象的情况下扩展其功能</li>
+                                <li>提供了对真实对象的访问控制</li>
+                                <li>可以实现延迟加载</li>
+                                <li>可以实现缓存</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>可能会增加系统的复杂性</li>
+                                <li>可能会导致请求处理速度变慢</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pattern-visualization">
+                        <h4>代理模式示意图</h4>
+                        <div class="pattern-diagram">
+                            <div class="diagram-box">客户端</div>
+                            <span class="diagram-arrow">→</span>
+                            <div class="diagram-box">代理</div>
+                            <span class="diagram-arrow">→</span>
+                            <div class="diagram-box">真实主题</div>
+                        </div>
+                    </div>
+
+                    <h3>4. 外观模式（Facade Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>外观模式</h4>
+                        <p>为子系统中的一组接口提供一个一致的界面，外观模式定义了一个高层接口，这个接口使得这一子系统更加容易使用。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 外观模式实现
+// 子系统1
+class CPU {
+  start() {
+    console.log('CPU启动');
+  }
+  
+  execute() {
+    console.log('CPU执行指令');
+  }
+  
+  shutdown() {
+    console.log('CPU关闭');
+  }
+}
+
+// 子系统2
+class Memory {
+  load() {
+    console.log('内存加载数据');
+  }
+  
+  store() {
+    console.log('内存存储数据');
+  }
+}
+
+// 子系统3
+class HardDrive {
+  read() {
+    console.log('硬盘读取数据');
+  }
+  
+  write() {
+    console.log('硬盘写入数据');
+  }
+}
+
+// 外观类
+class ComputerFacade {
+  constructor() {
+    this.cpu = new CPU();
+    this.memory = new Memory();
+    this.hardDrive = new HardDrive();
+  }
+  
+  startComputer() {
+    console.log('开始启动电脑...');
+    this.cpu.start();
+    this.memory.load();
+    this.hardDrive.read();
+    this.cpu.execute();
+    console.log('电脑启动完成');
+  }
+  
+  shutdownComputer() {
+    console.log('开始关闭电脑...');
+    this.cpu.shutdown();
+    console.log('电脑关闭完成');
+  }
+}
+
+// 使用
+const computer = new ComputerFacade();
+computer.startComputer();
+console.log('-------------------');
+computer.shutdownComputer();
+
+// 前端API外观示例
+class APIFacade {
+  constructor() {
+    this.baseURL = 'https://api.example.com';
+  }
+  
+  async fetchUserData(userId) {
+    try {
+      const response = await fetch(`${this.baseURL}/users/${userId}`);
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      // 可以在这里统一处理错误，比如显示错误提示
+      return null;
+    }
+  }
+  
+  async updateUserProfile(userId, data) {
+    try {
+      const response = await fetch(`${this.baseURL}/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) throw new Error('Failed to update profile');
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      return null;
+    }
+  }
+  
+  async getPosts(userId) {
+    try {
+      const response = await fetch(`${this.baseURL}/users/${userId}/posts`);
+      if (!response.ok) throw new Error('Failed to fetch posts');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      return [];
+    }
+  }
+}
+
+// 使用
+const api = new APIFacade();
+// api.fetchUserData(123).then(data => console.log(data));</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>当你要为一个复杂子系统提供一个简单接口时</li>
+                        <li>客户端与子系统之间存在大量的依赖关系</li>
+                        <li>希望将子系统与客户端解耦，提高子系统的独立性和可移植性</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>简化了客户端与子系统的交互</li>
+                                <li>降低了客户端与子系统之间的耦合度</li>
+                                <li>提高了子系统的独立性和可移植性</li>
+                                <li>对客户端屏蔽了子系统的复杂性</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>不能限制客户端直接访问子系统的类</li>
+                                <li>如果设计不当，可能会成为一个上帝对象（God Object）</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>四、行为型模式</h2>
+
+                    <h3>1. 观察者模式（Observer Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>观察者模式</h4>
+                        <p>定义了一种一对多的依赖关系，让多个观察者对象同时监听某一个主题对象。当主题对象状态发生变化时，所有依赖它的观察者都会得到通知并自动更新。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 观察者模式实现
+// 主题类
+class Subject {
+  constructor() {
+    this.observers = [];
+    this.state = null;
+  }
+  
+  // 添加观察者
+  addObserver(observer) {
+    if (!this.observers.includes(observer)) {
+      this.observers.push(observer);
+    }
+  }
+  
+  // 移除观察者
+  removeObserver(observer) {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
+    }
+  }
+  
+  // 通知所有观察者
+  notify() {
+    for (const observer of this.observers) {
+      observer.update(this.state);
+    }
+  }
+  
+  // 设置状态
+  setState(state) {
+    this.state = state;
+    this.notify();
+  }
+}
+
+// 观察者接口
+class Observer {
+  update(state) {
+    throw new Error('update方法必须被实现');
+  }
+}
+
+// 具体观察者1
+class ConcreteObserver1 extends Observer {
+  update(state) {
+    console.log(`观察者1收到状态更新: ${state}`);
+  }
+}
+
+// 具体观察者2
+class ConcreteObserver2 extends Observer {
+  update(state) {
+    console.log(`观察者2收到状态更新: ${state}`);
+  }
+}
+
+// 使用
+const subject = new Subject();
+const observer1 = new ConcreteObserver1();
+const observer2 = new ConcreteObserver2();
+
+subject.addObserver(observer1);
+subject.addObserver(observer2);
+
+subject.setState('新状态'); // 两个观察者都会收到通知
+
+// JavaScript实现 - 基于发布订阅模式
+class EventEmitter {
+  constructor() {
+    this.events = {};
+  }
+  
+  // 订阅事件
+  on(event, callback) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(callback);
+    return this;
+  }
+  
+  // 取消订阅
+  off(event, callback) {
+    if (!this.events[event]) return this;
+    
+    if (callback) {
+      this.events[event] = this.events[event].filter(cb => cb !== callback);
+    } else {
+      delete this.events[event];
+    }
+    
+    return this;
+  }
+  
+  // 触发事件
+  emit(event, ...args) {
+    if (!this.events[event]) return this;
+    
+    for (const callback of this.events[event]) {
+      callback(...args);
+    }
+    
+    return this;
+  }
+  
+  // 订阅一次
+  once(event, callback) {
+    const onceCallback = (...args) => {
+      callback(...args);
+      this.off(event, onceCallback);
+    };
+    
+    return this.on(event, onceCallback);
+  }
+}
+
+// 使用
+const emitter = new EventEmitter();
+
+const userLoggedInHandler = (user) => {
+  console.log(`用户 ${user.name} 已登录`);
+};
+
+emitter.on('userLoggedIn', userLoggedInHandler);
+emitter.on('userLoggedIn', (user) => {
+  console.log(`发送欢迎邮件给 ${user.email}`);
+});
+
+emitter.once('userRegistered', (user) => {
+  console.log(`新用户注册: ${user.name}`);
+});
+
+// 触发事件
+emitter.emit('userLoggedIn', { name: '张三', email: 'zhangsan@example.com' });
+emitter.emit('userRegistered', { name: '李四', email: 'lisi@example.com' });
+emitter.emit('userRegistered', { name: '王五', email: 'wangwu@example.com' }); // 第二次不会触发once的回调
+
+// 取消订阅
+emitter.off('userLoggedIn', userLoggedInHandler);
+emitter.emit('userLoggedIn', { name: '张三', email: 'zhangsan@example.com' }); // 只会触发第二个处理器</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>当一个对象的改变需要同时改变其他对象时</li>
+                        <li>当一个对象必须通知其他对象，而又不希望这些对象与自己紧密耦合时</li>
+                        <li>事件处理系统</li>
+                        <li>GUI组件交互</li>
+                        <li>消息队列系统</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>降低了观察者和被观察者之间的耦合度</li>
+                                <li>支持广播通信</li>
+                                <li>符合开闭原则</li>
+                                <li>可以实现反应式编程</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>如果观察者太多，可能会导致性能问题</li>
+                                <li>可能会导致循环依赖</li>
+                                <li>观察者只知道事件发生，但不知道事件的具体原因</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pattern-visualization">
+                        <h4>观察者模式示意图</h4>
+                        <div class="pattern-diagram">
+                            <div class="diagram-box">主题</div>
+                            <span class="diagram-arrow">→</span>
+                            <div class="diagram-box">观察者1</div>
+                            <span class="diagram-arrow">→</span>
+                            <div class="diagram-box">观察者2</div>
+                            <span class="diagram-arrow">→</span>
+                            <div class="diagram-box">观察者3</div>
+                        </div>
+                    </div>
+
+                    <h3>2. 策略模式（Strategy Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>策略模式</h4>
+                        <p>定义了算法家族，分别封装起来，让它们之间可以互相替换。策略模式让算法的变化独立于使用算法的客户。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 策略模式实现
+// 策略接口
+class PaymentStrategy {
+  pay(amount) {
+    throw new Error('pay方法必须被实现');
+  }
+}
+
+// 具体策略1 - 支付宝
+class AliPayStrategy extends PaymentStrategy {
+  pay(amount) {
+    console.log(`使用支付宝支付 ${amount} 元`);
+    return { success: true, method: 'alipay', amount };
+  }
+}
+
+// 具体策略2 - 微信支付
+class WechatPayStrategy extends PaymentStrategy {
+  pay(amount) {
+    console.log(`使用微信支付 ${amount} 元`);
+    return { success: true, method: 'wechat', amount };
+  }
+}
+
+// 具体策略3 - 信用卡支付
+class CreditCardStrategy extends PaymentStrategy {
+  constructor(cardNumber, expiryDate, cvv) {
+    super();
+    this.cardNumber = cardNumber;
+    this.expiryDate = expiryDate;
+    this.cvv = cvv;
+  }
+  
+  pay(amount) {
+    console.log(`使用信用卡 ${this.maskCardNumber()} 支付 ${amount} 元`);
+    return { 
+      success: true, 
+      method: 'creditcard', 
+      card: this.maskCardNumber(), 
+      amount 
+    };
+  }
+  
+  maskCardNumber() {
+    return this.cardNumber.replace(/\d(?=\d{4})/g, '*');
+  }
+}
+
+// 上下文类
+class PaymentContext {
+  constructor(strategy) {
+    this.strategy = strategy;
+  }
+  
+  setStrategy(strategy) {
+    this.strategy = strategy;
+  }
+  
+  executePayment(amount) {
+    if (!this.strategy) {
+      throw new Error('请设置支付策略');
+    }
+    return this.strategy.pay(amount);
+  }
+}
+
+// 使用
+const payment = new PaymentContext();
+
+// 使用支付宝支付
+payment.setStrategy(new AliPayStrategy());
+payment.executePayment(100);
+
+// 切换到微信支付
+payment.setStrategy(new WechatPayStrategy());
+payment.executePayment(200);
+
+// 切换到信用卡支付
+const creditCard = new CreditCardStrategy('1234567890123456', '12/25', '123');
+payment.setStrategy(creditCard);
+payment.executePayment(300);
+
+// 函数式策略模式
+const discountStrategies = {
+  // 无折扣策略
+  none: (price) => price,
+  
+  // 固定折扣策略
+  fixedDiscount: (price) => {
+    const discount = 10;
+    return Math.max(0, price - discount);
+  },
+  
+  // 百分比折扣策略
+  percentageDiscount: (price) => {
+    const discountRate = 0.1; // 10%折扣
+    return price * (1 - discountRate);
+  },
+  
+  // 会员折扣策略
+  memberDiscount: (price, isVIP) => {
+    if (isVIP) {
+      return price * 0.8; // VIP享受20%折扣
+    }
+    return price;
+  }
+};
+
+function calculatePrice(price, strategy, options = {}) {
+  if (typeof discountStrategies[strategy] !== 'function') {
+    throw new Error('无效的折扣策略');
+  }
+  
+  return discountStrategies[strategy](price, options.isVIP);
+}
+
+// 使用
+console.log(calculatePrice(100, 'none')); // 100
+console.log(calculatePrice(100, 'fixedDiscount')); // 90
+console.log(calculatePrice(100, 'percentageDiscount')); // 90
+console.log(calculatePrice(100, 'memberDiscount', { isVIP: true })); // 80</code></pre>
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>算法有多种变体，需要动态切换算法</li>
+                        <li>一个类定义了多种行为，这些行为在类的操作中以多个条件语句的形式出现</li>
+                        <li>需要对客户端隐藏算法的具体实现细节</li>
+                        <li>不同的算法需要不同的参数配置</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>可以在运行时动态切换算法</li>
+                                <li>避免使用多重条件语句</li>
+                                <li>每个策略类都是独立的，可以单独测试</li>
+                                <li>符合开闭原则</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>客户端必须了解所有的策略类</li>
+                                <li>策略类的数量可能会变得很多</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="code-demo">
+                        <h4>策略模式演示</h4>
+                        <button class="code-demo-button" id="strategyDemo">运行策略演示</button>
+                        <div class="code-demo-output" id="strategyOutput"></div>
+                    </div>
+
+                    <h3>3. 命令模式（Command Pattern）</h3>
+
+                    <div class="pattern-box">
+                        <h4>命令模式</h4>
+                        <p>将一个请求封装为一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撤销的操作。</p>
+                    </div>
+
+                    <h4>实现方式</h4>
+                    <pre><code>// 命令模式实现
+// 命令接口
+class Command {
+  execute() {
+    throw new Error('execute方法必须被实现');
+  }
+  
+  undo() {
+    throw new Error('undo方法必须被实现');
+  }
+}
+
+// 接收者 - 灯泡
+class Light {
+  constructor(name) {
+    this.name = name;
+    this.isOn = false;
+  }
+  
+  turnOn() {
+    this.isOn = true;
+    console.log(`${this.name} 灯已打开`);
+  }
+  
+  turnOff() {
+    this.isOn = false;
+    console.log(`${this.name} 灯已关闭`);
+  }
+  
+  getStatus() {
+    return this.isOn ? '打开' : '关闭';
+  }
+}
+
+// 具体命令1 - 打开灯
+class TurnOnLightCommand extends Command {
+  constructor(light) {
+    super();
+    this.light = light;
+  }
+  
+  execute() {
+    this.light.turnOn();
+  }
+  
+  undo() {
+    this.light.turnOff();
+  }
+}
+
+// 具体命令2 - 关闭灯
+class TurnOffLightCommand extends Command {
+  constructor(light) {
+    super();
+    this.light = light;
+  }
+  
+  execute() {
+    this.light.turnOff();
+  }
+  
+  undo() {
+    this.light.turnOn();
+  }
+}
+
+// 调用者 - 遥控器
+class RemoteControl {
+  constructor() {
+    this.command = null;
+    this.commandHistory = [];
+  }
+  
+  setCommand(command) {
+    this.command = command;
+  }
+  
+  pressButton() {
+    if (this.command) {
+      this.command.execute();
+      this.commandHistory.push(this.command);
+    }
+  }
+  
+  pressUndo() {
+    if (this.commandHistory.length > 0) {
+      const lastCommand = this.commandHistory.pop();
+      lastCommand.undo();
+    }
+  }
+}
+
+// 使用
+const livingRoomLight = new Light('客厅');
+const kitchenLight = new Light('厨房');
+
+const turnOnLivingRoomLight = new TurnOnLightCommand(livingRoomLight);
+const turnOffLivingRoomLight = new TurnOffLightCommand(livingRoomLight);
+const turnOnKitchenLight = new TurnOnLightCommand(kitchenLight);
+
+const remote = new RemoteControl();
+
+// 打开客厅灯
+remote.setCommand(turnOnLivingRoomLight);
+remote.pressButton();
+
+// 打开厨房灯
+remote.setCommand(turnOnKitchenLight);
+remote.pressButton();
+
+// 关闭客厅灯
+remote.setCommand(turnOffLivingRoomLight);
+remote.pressButton();
+
+// 撤销上一个操作（重新打开客厅灯）
+remote.pressUndo();
+
+// 宏命令 - 一键控制多个设备
+class MacroCommand extends Command {
+  constructor(commands) {
+    super();
+    this.commands = commands;
+  }
+  
+  execute() {
+    for (const command of this.commands) {
+      command.execute();
+    }
+  }
+  
+  undo() {
+    // 按相反顺序撤销
+    for (let i = this.commands.length - 1; i >= 0; i--) {
+      this.commands[i].undo();
+    }
+  }
+}
+
+// 创建一个"睡觉"宏命令，关闭所有灯
+const sleepCommand = new MacroCommand([
+  turnOffLivingRoomLight,
+  turnOffKitchenLight
+]);
+
+// 使用宏命令
+remote.setCommand(sleepCommand);
+remote.pressButton(); // 关闭所有灯
+
+// 函数式命令模式
+const createAddCommand = (calculator, value) => {
+  return {
+    execute: () => {
+      calculator.value += value;
+      console.log(`执行加法: 当前值 = ${calculator.value}`);
+    },
+    undo: () => {
+      calculator.value -= value;
+      console.log(`撤销加法: 当前值 = ${calculator.value}`);
+    }
+  };
+};
+
+const createSubtractCommand = (calculator, value) => {
+  return {
+    execute: () => {
+      calculator.value -= value;
+      console.log(`执行减法: 当前值 = ${calculator.value}`);
+    },
+    undo: () => {
+      calculator.value += value;
+      console.log(`撤销减法: 当前值 = ${calculator.value}`);
+    }
+  };
+};
+
+// 使用
+const calculator = { value: 0 };
+const add5 = createAddCommand(calculator, 5);
+const add10 = createAddCommand(calculator, 10);
+const subtract3 = createSubtractCommand(calculator, 3);
+
+add5.execute(); // 5
+add10.execute(); // 15
+subtract3.execute(); // 12
+subtract3.undo(); // 15
+
+                    <h4>应用场景</h4>
+                    <ul>
+                        <li>需要将请求转换为对象，以便用不同的请求参数化客户端</li>
+                        <li>需要支持可撤销和重做的操作</li>
+                        <li>需要将请求的发送者和接收者解耦</li>
+                        <li>需要支持日志记录、事务处理等操作</li>
+                        <li>GUI中的按钮点击、菜单操作等</li>
+                    </ul>
+
+                    <div class="pattern-pros-cons">
+                        <div class="pros">
+                            <h4><i class="fas fa-thumbs-up"></i> 优点</h4>
+                            <ul>
+                                <li>降低了系统的耦合度</li>
+                                <li>支持操作的撤销和重做</li>
+                                <li>可以将命令组合成复合命令（宏命令）</li>
+                                <li>容易实现命令日志和事务系统</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4><i class="fas fa-thumbs-down"></i> 缺点</h4>
+                            <ul>
+                                <li>可能导致系统中命令类的数量增加</li>
+                                <li>某些命令可能需要保存大量状态，占用较多资源</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>五、设计模式总结与最佳实践</h2>
+
+                    <h3>1. 设计模式的选择原则</h3>
+                    <p>在选择设计模式时，需要考虑以下几个因素：</p>
+                    <ul>
+                        <li><strong>问题的本质</strong>：不同的设计模式解决不同类型的问题，需要根据具体问题选择合适的模式</li>
+                        <li><strong>系统的需求</strong>：考虑系统的可扩展性、可维护性、性能等方面的需求</li>
+                        <li><strong>开发团队的经验</strong>：团队对某种模式的熟悉程度会影响实现效果</li>
+                        <li><strong>项目的规模</strong>：小型项目可能不需要使用复杂的设计模式</li>
+                    </ul>
+
+                    <h3>2. JavaScript中的设计模式最佳实践</h3>
+                    <ul>
+                        <li><strong>优先使用组合而非继承</strong>：JavaScript中组合通常比继承更加灵活</li>
+                        <li><strong>利用闭包和高阶函数</strong>：这些特性可以简化许多设计模式的实现</li>
+                        <li><strong>使用ES6+的新特性</strong>：如类、箭头函数、模板字符串等可以使代码更加简洁</li>
+                        <li><strong>避免过度设计</strong>：不要为了使用模式而使用模式，应该根据实际需求</li>
+                        <li><strong>保持模式的轻量级</strong>：在JavaScript中，设计模式的实现通常可以更加简洁</li>
+                    </ul>
+
+                    <h3>3. 常见设计模式的组合使用</h3>
+                    <p>在实际项目中，通常需要组合使用多种设计模式：</p>
+                    <ul>
+                        <li><strong>工厂模式 + 单例模式</strong>：创建全局唯一的工厂实例</li>
+                        <li><strong>观察者模式 + 命令模式</strong>：实现事件驱动系统，支持操作的撤销和重做</li>
+                        <li><strong>装饰器模式 + 策略模式</strong>：动态地为对象添加行为，并支持行为的切换</li>
+                        <li><strong>外观模式 + 代理模式</strong>：为复杂子系统提供简单接口，并控制对真实对象的访问</li>
+                    </ul>
+
+                    <h3>4. 设计模式的演进</h3>
+                    <p>随着JavaScript的发展，一些传统的设计模式在JavaScript中的实现方式也在不断演进：</p>
+                    <ul>
+                        <li><strong>从类继承到原型继承</strong>：JavaScript的原型特性使得某些基于类的设计模式实现方式发生变化</li>
+                        <li><strong>从命令式到声明式</strong>：现代前端框架如React、Vue等采用声明式编程，设计模式的应用场景也在变化</li>
+                        <li><strong>函数式编程的影响</strong>：函数式编程的特性如高阶函数、闭包等为设计模式提供了新的实现方式</li>
+                    </ul>
+
+                    <h2>六、结语</h2>
+                    <p>设计模式是软件设计的宝贵经验总结，掌握这些模式可以帮助我们编写更加优雅、可维护的代码。然而，设计模式并不是银弹，不能解决所有问题。在实际开发中，我们需要灵活运用设计模式，根据具体情况选择合适的解决方案。</p>
+                    <p>JavaScript作为一门灵活的编程语言，为设计模式的实现提供了多种可能性。通过理解这些模式的本质和JavaScript的特性，我们可以创建出更加高效、可扩展的应用程序。</p>
+                    <p>希望本文对您理解和应用JavaScript设计模式有所帮助！如果您有任何问题或建议，请在下方评论区留言。</p>
+                </div>
+
+                <!-- 文章标签 -->
+                <div class="post-tags">
+                    <a href="#" class="tag"><i class="fas fa-tag"></i> JavaScript</a>
+                    <a href="#" class="tag"><i class="fas fa-tag"></i> 设计模式</a>
+                    <a href="#" class="tag"><i class="fas fa-tag"></i> 单例模式</a>
+                    <a href="#" class="tag"><i class="fas fa-tag"></i> 工厂模式</a>
+                    <a href="#" class="tag"><i class="fas fa-tag"></i> 观察者模式</a>
+                </div>
+
+                <!-- 文章导航 -->
+                <div class="post-navigation">
+                    <a href="#" class="post-nav-link previous">
+                        <span>上一篇</span>
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <a href="#" class="post-nav-link">
+                        <i class="fas fa-chevron-right"></i>
+                        <span>下一篇</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- 相关文章 -->
+            <div class="related-posts">
+                <h3>相关文章</h3>
+                <div class="related-posts-grid">
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <img src="../images/blog1.svg" alt="JavaScript异步编程详解">
+                        </div>
+                        <div class="related-post-content">
+                            <div class="related-post-date">2023-08-15</div>
+                            <h4 class="related-post-title"><a href="javascript-async-guide.html">JavaScript异步编程详解</a></h4>
+                        </div>
+                    </div>
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <img src="../images/blog3.svg" alt="前端性能优化实战指南">
+                        </div>
+                        <div class="related-post-content">
+                            <div class="related-post-date">2023-09-10</div>
+                            <h4 class="related-post-title"><a href="performance-optimization-guide.html">前端性能优化实战指南</a></h4>
+                        </div>
+                    </div>
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <img src="../images/blog6.svg" alt="React Hooks使用指南">
+                        </div>
+                        <div class="related-post-content">
+                            <div class="related-post-date">2023-09-05</div>
+                            <h4 class="related-post-title"><a href="react-hooks-guide.html">React Hooks使用指南</a></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评论区 -->
+            <div class="comment-section">
+                <h3>评论区</h3>
+                <div class="comment-form">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" placeholder="请输入您的姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" placeholder="请输入您的邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">评论内容</label>
+                        <textarea id="comment" placeholder="请输入您的评论"></textarea>
+                    </div>
+                    <button class="btn btn-primary" id="submitComment">提交评论</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <a href="../index.html">
+                        <i class="fas fa-leaf"></i> 个人博客
+                    </a>
+                </div>
+                <div class="footer-links">
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="../index.html#about">关于我</a></li>
+                        <li><a href="../index.html#blog">博客</a></li>
+                        <li><a href="../index.html#contact">联系</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-weixin"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 个人博客. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 引入JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        // 适配器模式演示
+        document.getElementById('adapterDemo').addEventListener('click', function() {
+            const output = document.getElementById('adapterOutput');
+            output.innerHTML = '运行适配器模式演示...<br>';
+            
+            // 模拟旧API
+            const oldAPI = {
+                getWeatherData: function(location, callback) {
+                    setTimeout(() => {
+                        callback(null, { temperature: 25, humidity: 60 });
+                    }, 500);
+                }
+            };
+            
+            // 适配器将回调风格转换为Promise风格
+            const weatherAPIAdapter = {
+                getWeatherData: function(location) {
+                    return new Promise((resolve, reject) => {
+                        oldAPI.getWeatherData(location, (error, data) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(data);
+                            }
+                        });
+                    });
+                }
+            };
+            
+            // 使用适配器
+            async function demo() {
+                try {
+                    output.innerHTML += '请求天气数据...<br>';
+                    const data = await weatherAPIAdapter.getWeatherData('北京');
+                    output.innerHTML += `天气数据: 温度 ${data.temperature}°C, 湿度 ${data.humidity}%`;
+                } catch (error) {
+                    output.innerHTML += `错误: ${error.message}`;
+                }
+            }
+            
+            demo();
+        });
+        
+        // 策略模式演示
+        document.getElementById('strategyDemo').addEventListener('click', function() {
+            const output = document.getElementById('strategyOutput');
+            output.innerHTML = '运行策略模式演示...<br>';
+            
+            // 定义支付策略
+            const paymentStrategies = {
+                alipay: function(amount) {
+                    return `使用支付宝支付 ${amount} 元`;
+                },
+                wechat: function(amount) {
+                    return `使用微信支付 ${amount} 元`;
+                },
+                creditcard: function(amount) {
+                    return `使用信用卡支付 ${amount} 元`;
+                }
+            };
+            
+            // 支付上下文
+            function pay(amount, strategy) {
+                if (!paymentStrategies[strategy]) {
+                    return '不支持的支付方式';
+                }
+                return paymentStrategies[strategy](amount);
+            }
+            
+            // 演示不同的支付策略
+            output.innerHTML += pay(100, 'alipay') + '<br>';
+            output.innerHTML += pay(200, 'wechat') + '<br>';
+            output.innerHTML += pay(300, 'creditcard') + '<br>';
+            output.innerHTML += pay(400, 'paypal');
+        });
+        
+        // 评论提交处理
+        document.getElementById('submitComment').addEventListener('click', function() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const comment = document.getElementById('comment').value;
+            
+            if (!name || !email || !comment) {
+                alert('请填写完整的评论信息');
+                return;
+            }
+            
+            // 简单的表单验证
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('请输入有效的邮箱地址');
+                return;
+            }
+            
+            alert('评论提交成功！感谢您的反馈。');
+            
+            // 清空表单
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('comment').value = '';
+        });
+    </script>
+</body>
+</html>

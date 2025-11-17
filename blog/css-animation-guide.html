@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS动画与过渡效果实战指南 - 个人博客</title>
+    <!-- 引入外部资源 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入自定义样式 -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .blog-post-detail {
+            padding: 60px 0;
+        }
+        .blog-post-detail .container {
+            max-width: 800px;
+        }
+        .post-header {
+            margin-bottom: 40px;
+        }
+        .post-cover {
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .post-cover img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .post-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        .post-content {
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        .post-content h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.8rem;
+        }
+        .post-content h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        .post-content p {
+            margin-bottom: 20px;
+        }
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        .post-content li {
+            margin-bottom: 10px;
+        }
+        .post-content code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        .post-content pre {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .post-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .post-tags .tag {
+            background-color: var(--light-bg);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .post-tags .tag:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .related-posts {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+        .related-posts h3 {
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .related-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .related-post {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .related-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        .related-post-image {
+            height: 160px;
+            overflow: hidden;
+        }
+        .related-post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .related-post:hover .related-post-image img {
+            transform: scale(1.05);
+        }
+        .related-post-content {
+            padding: 20px;
+        }
+        .related-post-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        .related-post-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .related-post-title a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .related-post-title a:hover {
+            color: var(--primary-color);
+        }
+        .comment-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+        .comment-section h3 {
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .comment-form {
+            margin-bottom: 40px;
+        }
+        .comment-form .form-group {
+            margin-bottom: 20px;
+        }
+        .comment-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .comment-form input:focus,
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .comment-form textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .post-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+        .post-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .post-nav-link:hover {
+            color: var(--primary-color);
+        }
+        .post-nav-link i {
+            font-size: 1.2rem;
+        }
+        .post-nav-link.previous {
+            flex-direction: row-reverse;
+        }
+        
+        /* 动画示例样式 */
+        .animation-demo {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .demo-box {
+            width: 100px;
+            height: 100px;
+            background-color: var(--primary-color);
+            margin: 0 auto 20px;
+        }
+        
+        /* 示例1：过渡 */
+        .demo-box.transition-demo {
+            transition: all 0.3s ease;
+        }
+        .demo-box.transition-demo:hover {
+            transform: scale(1.2) rotate(15deg);
+            background-color: #ff6b6b;
+        }
+        
+        /* 示例2：简单动画 */
+        .demo-box.bounce-animation {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        /* 示例3：旋转动画 */
+        .demo-box.spin-animation {
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* 示例4：脉冲动画 */
+        .demo-box.pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* 动画卡片示例 */
+        .animated-card {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .animated-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .animated-card-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .animated-card-body {
+            padding: 20px;
+        }
+        
+        /* 进度条示例 */
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0;
+            animation: progressAnimation 3s forwards;
+        }
+        @keyframes progressAnimation {
+            from {
+                width: 0%;
+            }
+            to {
+                width: 75%;
+            }
+        }
+        
+        /* 工具提示示例 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 4px;
+            cursor: help;
+        }
+        .tooltip::after {
+            content: "这是一个CSS工具提示！";
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            white-space: nowrap;
+        }
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 加载动画示例 */
+        .loader {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 20px;
+        }
+        .loader div {
+            position: absolute;
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 视差效果示例 */
+        .parallax-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            margin: 30px 0;
+        }
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background-image: url('../images/blog4.svg');
+            background-size: cover;
+            background-position: center;
+            animation: parallax 10s infinite linear;
+        }
+        @keyframes parallax {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+            .post-content h2 {
+                font-size: 1.5rem;
+            }
+            .post-content h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar" id="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <i class="fas fa-leaf"></i> 个人博客
+                </a>
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../index.html#about">关于我</a></li>
+                    <li><a href="../index.html#blog" class="active">博客</a></li>
+                    <li><a href="../index.html#contact">联系</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 博客文章详情 -->
+    <section class="blog-post-detail">
+        <div class="container">
+            <article>
+                <!-- 文章头部 -->
+                <div class="post-header">
+                    <div class="post-cover">
+                        <img src="../images/blog4.svg" alt="CSS动画与过渡效果实战指南">
+                    </div>
+                    <div class="post-meta">
+                        <span><i class="far fa-calendar-alt"></i> 2023-08-15</span>
+                        <span><i class="far fa-folder"></i> CSS开发</span>
+                        <span><i class="far fa-eye"></i> 阅读量: 2103</span>
+                    </div>
+                    <h1 class="post-title">CSS动画与过渡效果实战指南</h1>
+                </div>
+
+                <!-- 文章内容 -->
+                <div class="post-content">
+                    <p>CSS动画和过渡效果是现代网页设计中不可或缺的一部分，它们可以提升用户体验，使界面更加生动和直观。本文将全面介绍CSS动画和过渡的基础知识，并通过丰富的实例展示如何创建引人注目的动画效果，从简单的悬停效果到复杂的多步骤动画序列。</p>
+
+                    <h2>一、CSS过渡基础</h2>
+
+                    <h3>1. 理解CSS过渡</h3>
+                    <p>CSS过渡允许我们平滑地改变CSS属性值，而不是突然地跳跃。它可以应用于任何数值型CSS属性，如颜色、尺寸、位置等。</p>
+
+                    <h4>基本语法</h4>
+                    <pre><code>transition: [property] [duration] [timing-function] [delay];</code></pre>
+
+                    <ul>
+                        <li><code>property</code>：要过渡的CSS属性名</li>
+                        <li><code>duration</code>：过渡持续时间</li>
+                        <li><code>timing-function</code>：过渡的时间函数（缓动函数）</li>
+                        <li><code>delay</code>：过渡开始前的延迟时间</li>
+                    </ul>
+
+                    <h4>简单示例</h4>
+                    <pre><code>.box {
+  width: 100px;
+  height: 100px;
+  background-color: blue;
+  transition: width 0.3s ease;
+}
+
+.box:hover {
+  width: 200px;
+}</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="demo-box transition-demo"></div>
+                        <p>悬停在此方块上查看过渡效果</p>
+                    </div>
+
+                    <h3>2. 过渡属性详解</h3>
+
+                    <h4>过渡属性（transition-property）</h4>
+                    <p>指定要应用过渡效果的CSS属性。可以是单个属性、多个属性或<code>all</code>（所有可过渡的属性）。</p>
+
+                    <pre><code>/* 单个属性 */
+transition-property: background-color;
+
+/* 多个属性 */
+transition-property: background-color, width, height;
+
+/* 所有可过渡属性 */
+transition-property: all;</code></pre>
+
+                    <h4>过渡持续时间（transition-duration）</h4>
+                    <p>指定过渡效果完成所需的时间，单位为秒（s）或毫秒（ms）。</p>
+
+                    <pre><code>/* 1秒 */
+transition-duration: 1s;
+
+/* 500毫秒 */
+transition-duration: 500ms;
+
+/* 多个属性使用不同的持续时间 */
+transition: background-color 0.3s, width 0.5s;</code></pre>
+
+                    <h4>过渡时间函数（transition-timing-function）</h4>
+                    <p>控制过渡效果的速度曲线，可以使用预定义值或自定义贝塞尔曲线。</p>
+
+                    <ul>
+                        <li><code>ease</code>：默认值，缓慢开始，然后加速，最后减速</li>
+                        <li><code>linear</code>：匀速运动</li>
+                        <li><code>ease-in</code>：缓慢开始</li>
+                        <li><code>ease-out</code>：缓慢结束</li>
+                        <li><code>ease-in-out</code>：缓慢开始和结束</li>
+                        <li><code>cubic-bezier(n,n,n,n)</code>：自定义贝塞尔曲线</li>
+                    </ul>
+
+                    <pre><code>/* 预定义函数 */
+transition-timing-function: ease-out;
+
+/* 自定义贝塞尔曲线 */
+transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);</code></pre>
+
+                    <h4>过渡延迟（transition-delay）</h4>
+                    <p>指定过渡效果开始前的延迟时间。</p>
+
+                    <pre><code>/* 延迟200毫秒开始 */
+transition-delay: 200ms;
+
+/* 多个属性使用不同的延迟 */
+transition: background-color 0.3s 0ms, width 0.3s 100ms;</code></pre>
+
+                    <h3>3. 过渡效果的应用场景</h3>
+
+                    <h4>按钮悬停效果</h4>
+                    <pre><code>.btn {
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}</code></pre>
+
+                    <h4>卡片悬停效果</h4>
+                    <pre><code>.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="animated-card">
+                            <div class="animated-card-header">
+                                <h3>悬停卡片</h3>
+                            </div>
+                            <div class="animated-card-body">
+                                <p>将鼠标悬停在此卡片上，查看平滑的过渡效果。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>4. 过渡效果的性能考量</h3>
+                    <p>虽然过渡效果可以提升用户体验，但也需要注意性能问题。以下是一些性能优化建议：</p>
+
+                    <ul>
+                        <li><strong>优先使用transform和opacity</strong>：这两个属性不会触发布局重排（reflow），性能更好</li>
+                        <li><strong>避免使用复杂的渐变和阴影</strong>：这些效果可能导致性能下降</li>
+                        <li><strong>使用GPU加速</strong>：通过添加<code>transform: translateZ(0)</code>或<code>will-change</code>属性启用GPU加速</li>
+                        <li><strong>限制过渡属性数量</strong>：只过渡必要的属性，避免使用<code>all</code></li>
+                    </ul>
+
+                    <h2>二、CSS动画基础</h2>
+
+                    <h3>1. 理解CSS动画</h3>
+                    <p>CSS动画通过<code>@keyframes</code>规则和<code>animation</code>属性实现，允许我们创建比过渡更复杂的动画序列。与过渡不同，动画不需要触发事件（如悬停）就可以自动播放。</p>
+
+                    <h4>基本语法</h4>
+                    <pre><code>/* 定义关键帧 */
+@keyframes animationName {
+  from {
+    /* 初始状态 */
+  }
+  to {
+    /* 结束状态 */
+  }
+}
+
+/* 或者使用百分比 */
+@keyframes animationName {
+  0% {
+    /* 初始状态 */
+  }
+  50% {
+    /* 中间状态 */
+  }
+  100% {
+    /* 结束状态 */
+  }
+}
+
+/* 应用动画 */
+.element {
+  animation: animationName duration timing-function delay iteration-count direction fill-mode;
+}</code></pre>
+
+                    <h4>简单示例</h4>
+                    <pre><code>@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.bounce-element {
+  animation: bounce 2s infinite;
+}</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="demo-box bounce-animation"></div>
+                        <p>弹跳动画效果</p>
+                    </div>
+
+                    <h3>2. 动画属性详解</h3>
+
+                    <h4>动画名称（animation-name）</h4>
+                    <p>指定要应用的动画名称，必须与<code>@keyframes</code>规则中定义的名称匹配。</p>
+
+                    <pre><code>animation-name: bounce;</code></pre>
+
+                    <h4>动画持续时间（animation-duration）</h4>
+                    <p>指定动画完成一个周期所需的时间。</p>
+
+                    <pre><code>animation-duration: 2s;</code></pre>
+
+                    <h4>动画时间函数（animation-timing-function）</h4>
+                    <p>控制动画的速度曲线，与过渡的时间函数相似。</p>
+
+                    <pre><code>animation-timing-function: ease-in-out;</code></pre>
+
+                    <h4>动画延迟（animation-delay）</h4>
+                    <p>指定动画开始前的延迟时间。</p>
+
+                    <pre><code>animation-delay: 1s;</code></pre>
+
+                    <h4>动画迭代次数（animation-iteration-count）</h4>
+                    <p>指定动画播放的次数，可以是数字或<code>infinite</code>（无限循环）。</p>
+
+                    <pre><code>/* 播放3次 */
+animation-iteration-count: 3;
+
+/* 无限循环 */
+animation-iteration-count: infinite;</code></pre>
+
+                    <h4>动画方向（animation-direction）</h4>
+                    <p>指定动画是否应该反向播放。</p>
+
+                    <ul>
+                        <li><code>normal</code>：默认值，正向播放</li>
+                        <li><code>reverse</code>：反向播放</li>
+                        <li><code>alternate</code>：交替方向，正向和反向交替播放</li>
+                        <li><code>alternate-reverse</code>：反向交替，反向和正向交替播放</li>
+                    </ul>
+
+                    <pre><code>animation-direction: alternate;</code></pre>
+
+                    <h4>动画填充模式（animation-fill-mode）</h4>
+                    <p>指定动画在播放前后如何应用样式。</p>
+
+                    <ul>
+                        <li><code>none</code>：默认值，动画播放前后不改变元素样式</li>
+                        <li><code>forwards</code>：动画结束后保持结束状态的样式</li>
+                        <li><code>backwards</code>：应用动画延迟期间应用起始帧的样式</li>
+                        <li><code>both</code>：同时应用forwards和backwards的效果</li>
+                    </ul>
+
+                    <pre><code>animation-fill-mode: forwards;</code></pre>
+
+                    <h4>动画播放状态（animation-play-state）</h4>
+                    <p>控制动画的播放状态。</p>
+
+                    <ul>
+                        <li><code>running</code>：默认值，动画正在播放</li>
+                        <li><code>paused</code>：动画已暂停</li>
+                    </ul>
+
+                    <pre><code>animation-play-state: paused;</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="demo-box spin-animation"></div>
+                        <p>旋转动画效果</p>
+                    </div>
+
+                    <h3>3. 关键帧动画技巧</h3>
+
+                    <h4>使用百分比定义多个关键帧</h4>
+                    <p>通过使用百分比，可以创建更复杂的动画序列：</p>
+
+                    <pre><code>@keyframes complexAnimation {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  30% {
+    transform: translateX(100px) rotate(180deg);
+    opacity: 0.7;
+  }
+  70% {
+    transform: translateX(200px) rotate(270deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(300px) rotate(360deg);
+    opacity: 1;
+  }
+}</code></pre>
+
+                    <h4>使用from和to简化简单动画</h4>
+                    <p>对于只有两个状态的简单动画，可以使用<code>from</code>和<code>to</code>：</p>
+
+                    <pre><code>@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}</code></pre>
+
+                    <h3>4. 常见动画效果示例</h3>
+
+                    <h4>脉冲效果</h4>
+                    <pre><code>@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="demo-box pulse-animation"></div>
+                        <p>脉冲动画效果</p>
+                    </div>
+
+                    <h4>加载动画</h4>
+                    <pre><code>@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="loader">
+                            <div></div>
+                        </div>
+                        <p>加载动画效果</p>
+                    </div>
+
+                    <h4>进度条动画</h4>
+                    <pre><code>@keyframes progressAnimation {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 75%;
+  }
+}
+
+.progress-bar {
+  height: 20px;
+  background-color: #3498db;
+  width: 0;
+  animation: progressAnimation 3s forwards;
+}</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <p>进度条动画效果</p>
+                    </div>
+
+                    <h2>三、高级动画技巧</h2>
+
+                    <h3>1. 组合多个动画</h3>
+                    <p>可以在一个元素上应用多个动画，通过逗号分隔：</p>
+
+                    <pre><code>.animated-element {
+  animation: 
+    bounce 2s ease infinite,
+    rotate 4s linear infinite,
+    colorChange 3s ease-in-out infinite alternate;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-30px); }
+  60% { transform: translateY(-15px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes colorChange {
+  from { background-color: blue; }
+  to { background-color: red; }
+}</code></pre>
+
+                    <h3>2. 动画延迟序列</h3>
+                    <p>通过为多个元素设置不同的动画延迟，可以创建有趣的序列动画：</p>
+
+                    <pre><code>.item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.item:nth-child(1) { animation-delay: 0.1s; }
+.item:nth-child(2) { animation-delay: 0.2s; }
+.item:nth-child(3) { animation-delay: 0.3s; }
+.item:nth-child(4) { animation-delay: 0.4s; }
+.item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}</code></pre>
+
+                    <h3>3. 使用CSS变量增强动画</h3>
+                    <p>CSS变量可以使动画更灵活、更易于维护：</p>
+
+                    <pre><code>:root {
+  --animation-duration: 2s;
+  --animation-color: #3498db;
+  --animation-scale: 1.2;
+}
+
+.animated-box {
+  animation: pulse var(--animation-duration) infinite;
+  background-color: var(--animation-color);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(var(--animation-scale)); }
+  100% { transform: scale(1); }
+}
+
+/* 可以在不同状态或媒体查询中修改变量 */
+.animated-box:hover {
+  --animation-color: #e74c3c;
+  --animation-duration: 1s;
+}</code></pre>
+
+                    <h3>4. 视差滚动效果</h3>
+                    <p>视差滚动效果可以创建深度感，使页面更加生动：</p>
+
+                    <pre><code>.parallax-container {
+  height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  perspective: 1px;
+}
+
+.parallax-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.parallax-base {
+  transform: translateZ(0);
+}
+
+.parallax-back {
+  transform: translateZ(-1px) scale(2);
+}
+
+/* 简单的视差效果 */
+@keyframes parallax {
+  0% {
+    background-position-y: 0px;
+  }
+  100% {
+    background-position-y: 500px;
+  }
+}
+
+.parallax-bg {
+  animation: parallax 10s infinite linear;
+  background-image: url('background.jpg');
+  background-size: cover;
+}
+</code></pre>
+
+                    <div class="animation-demo">
+                        <div class="parallax-container">
+                            <div class="parallax-bg"></div>
+                        </div>
+                        <p>简单的视差动画效果</p>
+                    </div>
+
+                    <h3>5. 响应式动画</h3>
+                    <p>根据不同的屏幕尺寸调整动画效果，确保在各种设备上都能提供良好的体验：</p>
+
+                    <pre><code>@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.animated-element {
+  animation: pulse 2s infinite;
+}
+
+/* 在小屏幕上调整动画 */
+@media (max-width: 768px) {
+  .animated-element {
+    animation: pulse 3s infinite;
+  }
+}
+
+/* 在大屏幕上增强动画 */
+@media (min-width: 1200px) {
+  .animated-element {
+    animation: pulse 1.5s infinite;
+  }
+}</code></pre>
+
+                    <h3>6. 使用animation-play-state控制动画</h3>
+                    <p>通过JavaScript动态修改<code>animation-play-state</code>属性，可以控制动画的播放和暂停：</p>
+
+                    <pre><code>/* CSS */
+.animated-element {
+  animation: bounce 2s infinite;
+}
+
+.animated-element.paused {
+  animation-play-state: paused;
+}
+
+/* JavaScript */
+const element = document.querySelector('.animated-element');
+const toggleButton = document.querySelector('#toggle-animation');
+
+toggleButton.addEventListener('click', () => {
+  element.classList.toggle('paused');
+});</code></pre>
+
+                    <h2>四、CSS动画最佳实践</h2>
+
+                    <h3>1. 性能优化</h3>
+
+                    <ul>
+                        <li><strong>使用transform和opacity</strong>：这两个属性不会触发重排（reflow），性能更好</li>
+                        <li><strong>避免使用position、top、left等属性</strong>：这些属性会触发重排</li>
+                        <li><strong>使用GPU加速</strong>：通过添加<code>transform: translateZ(0)</code>或<code>will-change</code>属性启用GPU加速</li>
+                        <li><strong>减少动画复杂度</strong>：避免在同一页面上使用过多复杂动画</li>
+                        <li><strong>使用适当的动画时间</strong>：动画持续时间应该足够长以确保平滑，但不要太长以免用户等待</li>
+                    </ul>
+
+                    <pre><code>/* 好的做法 */
+.good-animation {
+  will-change: transform, opacity;
+  animation: moveElement 1s ease-in-out;
+}
+
+@keyframes moveElement {
+  from {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(100px);
+    opacity: 1;
+  }
+}
+
+/* 避免这样做 */
+.bad-animation {
+  animation: badMove 1s ease-in-out;
+}
+
+@keyframes badMove {
+  from {
+    left: 0;
+    width: 100px;
+  }
+  to {
+    left: 100px;
+    width: 200px;
+  }
+}</code></pre>
+
+                    <h3>2. 可访问性考虑</h3>
+
+                    <ul>
+                        <li><strong>尊重用户偏好</strong>：通过<code>prefers-reduced-motion</code>媒体查询检测用户是否希望减少动画</li>
+                        <li><strong>提供替代方案</strong>：为无法使用动画的用户提供静态替代方案</li>
+                        <li><strong>避免闪烁</strong>：避免使用可能导致癫痫发作的快速闪烁动画</li>
+                        <li><strong>保持足够的对比度</strong>：动画元素应该有足够的对比度，确保在动画过程中仍然可读</li>
+                    </ul>
+
+                    <pre><code>/* 检查用户是否偏好减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 为关键动画元素提供替代方案 */
+.animated-button {
+  /* 动画样式 */
+  transition: all 0.3s ease;
+}
+
+/* 当减少动画时，使用简单的样式变化 */
+@media (prefers-reduced-motion: reduce) {
+  .animated-button:hover {
+    /* 静态样式变化，无动画 */
+    background-color: #e74c3c;
+  }
+}</code></pre>
+
+                    <h3>3. 开发和调试技巧</h3>
+
+                    <ul>
+                        <li><strong>使用动画速记</strong>：使用速记形式可以简化代码</li>
+                        <li><strong>命名规范</strong>：为动画使用描述性的名称，便于维护</li>
+                        <li><strong>使用开发工具</strong>：利用浏览器开发工具的动画调试功能</li>
+                        <li><strong>渐进增强</strong>：确保即使在不支持动画的浏览器中也能正常工作</li>
+                    </ul>
+
+                    <h3>4. 常见陷阱和解决方案</h3>
+
+                    <h4>动画不播放</h4>
+                    <ul>
+                        <li>确保<code>@keyframes</code>规则名称与<code>animation-name</code>匹配</li>
+                        <li>检查是否指定了动画持续时间</li>
+                        <li>确保动画属性可以被动画化</li>
+                    </ul>
+
+                    <h4>动画性能问题</h4>
+                    <ul>
+                        <li>减少同时动画的元素数量</li>
+                        <li>使用CSS硬件加速</li>
+                        <li>优化动画关键帧，减少复杂计算</li>
+                    </ul>
+
+                    <h4>浏览器兼容性问题</h4>
+                    <ul>
+                        <li>对于旧浏览器，使用适当的前缀</li>
+                        <li>提供降级方案</li>
+                        <li>使用特性检测来确定是否支持特定的动画功能</li>
+                    </ul>
+
+                    <h2>五、实用动画示例</h2>
+
+                    <h3>1. 工具提示动画</h3>
+                    <pre><code>.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 添加一个小箭头 */
+.tooltip::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.tooltip:hover::before {
+  opacity: 1;
+  visibility: visible;
+}</code></pre>
+
+                    <div class="animation-demo">
+                        <span class="tooltip">悬停我查看工具提示</span>
+                    </div>
+
+                    <h3>2. 滚动触发动画</h3>
+                    <p>可以通过JavaScript检测元素是否进入视口，然后添加动画类：</p>
+
+                    <pre><code>/* CSS */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* JavaScript */
+const fadeElements = document.querySelectorAll('.fade-in');
+
+function checkFade() {
+  fadeElements.forEach(element => {
+    const elementTop = element.getBoundingClientRect().top;
+    const elementVisible = 150;
+    
+    if (elementTop < window.innerHeight - elementVisible) {
+      element.classList.add('active');
+    }
+  });
+}
+
+window.addEventListener('scroll', checkFade);
+checkFade(); // 初始检查</code></pre>
+
+                    <h3>3. 页面过渡动画</h3>
+                    <pre><code>/* CSS */
+.page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.page-transition.entering,
+.page-transition.exiting {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* JavaScript */
+const pageTransition = document.querySelector('.page-transition');
+
+// 点击链接时触发页面退出动画
+document.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    // 仅对内部链接应用动画
+    if (link.hostname === window.location.hostname) {
+      e.preventDefault();
+      
+      pageTransition.classList.add('exiting');
+      
+      setTimeout(() => {
+        window.location.href = link.href;
+      }, 500);
+    }
+  });
+});
+
+// 页面加载时触发进入动画
+window.addEventListener('load', () => {
+  pageTransition.classList.add('entering');
+  
+  setTimeout(() => {
+    pageTransition.classList.remove('entering');
+  }, 500);
+});</code></pre>
+
+                    <h3>4. 加载状态动画</h3>
+                    <pre><code>/* 圆点加载动画 */
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading-dots span {
+  width: 12px;
+  height: 12px;
+  background-color: #3498db;
+  border-radius: 50%;
+  animation: loadingDots 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loadingDots {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}</code></pre>
+
+                    <h3>5. 打字机效果</h3>
+                    <pre><code>.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid;
+  animation: 
+    typing 3.5s steps(40, end),
+    blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: black; }
+}</code></pre>
+
+                    <h2>六、结语</h2>
+                    
+                    <p>CSS动画和过渡效果是现代网页设计的强大工具，它们可以提升用户体验，使界面更加生动和直观。通过本文介绍的技术，你可以创建从简单到复杂的各种动画效果，为你的网页增添视觉吸引力。</p>
+
+                    <p>记住，好的动画应该是增强而不是分散用户注意力。始终优先考虑性能和可访问性，确保动画能够在各种设备和浏览器上正常工作，并且不会对用户体验产生负面影响。</p>
+
+                    <p>随着CSS技术的不断发展，新的动画特性也在不断涌现，如CSS动画工作区（Worklets）和Web动画API等。保持学习和探索，你将能够创建出更加惊艳和高效的动画效果。</p>
+
+                    <div class="performance-tip">
+                        <strong>最终建议：</strong>不要过度使用动画。虽然动画可以增强用户体验，但过多或过于复杂的动画可能会分散用户注意力，甚至导致性能问题。始终以用户体验为中心，确保动画服务于功能，而不是相反。
+                    </div>
+                </div>
+
+                <!-- 文章标签 -->
+                <div class="post-tags">
+                    <a href="#" class="tag">CSS</a>
+                    <a href="#" class="tag">动画</a>
+                    <a href="#" class="tag">过渡效果</a>
+                    <a href="#" class="tag">前端开发</a>
+                </div>
+
+                <!-- 文章导航 -->
+                <div class="post-navigation">
+                    <a href="react-performance-optimization.html" class="post-nav-link previous">
+                        <span>React性能优化全面指南</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="javascript-design-patterns.html" class="post-nav-link next">
+                        <i class="fas fa-arrow-right"></i>
+                        <span>JavaScript设计模式实战</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- 相关文章 -->
+            <div class="related-posts">
+                <h3>相关文章</h3>
+                <div class="related-posts-grid">
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <img src="../images/blog2.svg" alt="CSS Grid布局指南">
+                        </div>
+                        <div class="related-post-content">
+                            <div class="related-post-date">2023-06-25</div>
+                            <h4 class="related-post-title"><a href="css-grid-guide.html">CSS Grid布局完全指南</a></h4>
+                        </div>
+                    </div>
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <img src="../images/blog3.svg" alt="响应式设计">
+                        </div>
+                        <div class="related-post-content">
+                            <div class="related-post-date">2023-03-12</div>
+                            <h4 class="related-post-title"><a href="responsive-design-guide.html">响应式设计原则与实践</a></h4>
+                        </div>
+                    </div>
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <img src="../images/blog8.svg" alt="前端性能优化">
+                        </div>
+                        <div class="related-post-content">
+                            <div class="related-post-date">2023-07-08</div>
+                            <h4 class="related-post-title"><a href="performance-optimization-guide.html">前端性能优化实战指南</a></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评论区 -->
+            <div class="comment-section">
+                <h3>发表评论</h3>
+                <form class="comment-form">
+                    <div class="form-group">
+                        <label for="comment-name">姓名</label>
+                        <input type="text" id="comment-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-email">邮箱</label>
+                        <input type="email" id="comment-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment-content">评论内容</label>
+                        <textarea id="comment-content" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交评论</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3><i class="fas fa-leaf"></i> 个人博客</h3>
+                    <p>探索技术与生活的交叉点</p>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="../index.html#about">关于我</a></li>
+                        <li><a href="../index.html#blog">博客</a></li>
+                        <li><a href="../index.html#contact">联系</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>关注我</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-weixin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 个人博客. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 引入JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        // 评论表单提交处理
+        const commentForm = document.querySelector('.comment-form');
+        if (commentForm) {
+            commentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalText = submitButton.innerHTML;
+                
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 提交中...';
+                
+                // 模拟评论提交
+                setTimeout(() => {
+                    submitButton.innerHTML = '<i class="fas fa-check"></i> 评论成功';
+                    
+                    // 重置表单
+                    this.reset();
+                    
+                    // 恢复按钮状态
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalText;
+                    }, 2000);
+                }, 1500);
+            });
+        }
+        
+        // 页面滚动动画效果示例
+        const fadeElements = document.querySelectorAll('.related-post');
+        
+        function checkFade() {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.style.opacity = "1";
+                    element.style.transform = "translateY(0)";
+                }
+            });
+        }
+        
+        // 初始化设置
+        fadeElements.forEach(element => {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(20px)";
+            element.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+        });
+        
+        window.addEventListener('scroll', checkFade);
+        // 初始检查
+        checkFade();
+    </script>
+</body>
+</html>

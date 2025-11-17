@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid布局完全指南 - 个人博客</title>
+    <!-- 引入外部资源 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入自定义样式 -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar" id="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <i class="fas fa-leaf"></i> 个人博客
+                </a>
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../index.html#about">关于我</a></li>
+                    <li><a href="../index.html#blog" class="active">博客</a></li>
+                    <li><a href="../index.html#contact">联系</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 博客文章详情 -->
+    <section class="blog-post-detail">
+        <div class="container">
+            <article class="post-detail">
+                <div class="post-header">
+                    <div class="post-meta">
+                        <span class="post-date">2023-05-28</span>
+                        <span class="post-category">CSS</span>
+                    </div>
+                    <h1 class="post-title">CSS Grid布局完全指南</h1>
+                    <div class="author-info">
+                        <img src="../images/avatar.svg" alt="作者头像" class="author-avatar">
+                        <div class="author-details">
+                            <span class="author-name">李鹏</span>
+                            <span class="author-bio">前端开发工程师</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <p>CSS Grid是一个强大的二维布局系统，它让我们能够轻松创建复杂的页面布局。本文将从基础概念到高级技巧全面介绍Grid布局，帮助你掌握这一现代CSS布局技术。</p>
+                    
+                    <h2>什么是CSS Grid布局？</h2>
+                    <p>CSS Grid布局（Grid）是一个基于网格的布局系统，它允许我们使用行和列来定位和调整元素的大小，从而创建复杂的二维布局结构。与Flexbox（一维布局）不同，Grid布局是真正的二维布局系统。</p>
+                    
+                    <h2>Grid布局的基本概念</h2>
+                    
+                    <h3>1. 网格容器和网格项</h3>
+                    <p>要使用Grid布局，首先需要创建一个网格容器，然后它的子元素就会成为网格项。</p>
+                    <pre><code>.container {
+  display: grid;
+}</code></pre>
+                    
+                    <h3>2. 网格线</h3>
+                    <p>网格线是网格的分隔线，包括水平网格线和垂直网格线。它们定义了网格的结构。</p>
+                    
+                    <h3>3. 网格轨道</h3>
+                    <p>网格轨道是两个相邻网格线之间的空间，可以是行轨道或列轨道。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 100px 200px;
+  grid-template-rows: 50px 100px;
+}</code></pre>
+                    
+                    <h3>4. 网格单元格</h3>
+                    <p>网格单元格是由相邻的两条水平网格线和两条垂直网格线围成的最小单位，类似于表格的单元格。</p>
+                    
+                    <h3>5. 网格区域</h3>
+                    <p>网格区域是由多条网格线围成的区域，可以包含一个或多个网格单元格。</p>
+                    
+                    <h2>基本的Grid属性</h2>
+                    
+                    <h3>网格容器属性</h3>
+                    
+                    <h4>1. grid-template-columns 和 grid-template-rows</h4>
+                    <p>这两个属性用于定义网格的列数和行数，以及每列每行的大小。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 100px 1fr 2fr;
+  grid-template-rows: 100px auto;
+}</code></pre>
+                    <p>这里使用了几个关键单位：</p>
+                    <ul>
+                        <li><code>fr</code>：弹性长度单位，表示剩余空间的一部分</li>
+                        <li><code>auto</code>：根据内容自动调整大小</li>
+                        <li>固定长度（px, em, rem等）</li>
+                    </ul>
+                    
+                    <h4>2. grid-template-areas</h4>
+                    <p>这个属性允许我们使用命名的网格区域来定义布局。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+}
+
+.header {
+  grid-area: header;
+}
+
+.sidebar {
+  grid-area: sidebar;
+}
+
+.main {
+  grid-area: main;
+}
+
+.footer {
+  grid-area: footer;
+}</code></pre>
+                    
+                    <h4>3. grid-gap, grid-row-gap, grid-column-gap</h4>
+                    <p>这些属性用于设置网格项之间的间距。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 20px;
+  /* 等同于 */
+  grid-row-gap: 20px;
+  grid-column-gap: 20px;
+}
+
+/* 注意：在CSS Grid Level 2中，这些属性被简化为gap, row-gap, column-gap */</code></pre>
+                    
+                    <h4>4. grid-auto-flow</h4>
+                    <p>这个属性控制网格项的排列顺序。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-flow: row; /* 默认值，按行排列 */
+  /* 或者 */
+  grid-auto-flow: column; /* 按列排列 */
+  /* 或者 */
+  grid-auto-flow: dense; /* 尝试填充网格中的空白区域 */
+}</code></pre>
+                    
+                    <h4>5. justify-items 和 align-items</h4>
+                    <p>这些属性控制网格项在其单元格中的水平和垂直对齐方式。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: start; /* 水平对齐：start, end, center, stretch */
+  align-items: center; /* 垂直对齐：start, end, center, stretch */
+}</code></pre>
+                    
+                    <h4>6. justify-content 和 align-content</h4>
+                    <p>这些属性控制整个网格在网格容器中的水平和垂直对齐方式。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 100px 100px;
+  justify-content: space-between; /* 水平分布：start, end, center, stretch, space-around, space-between, space-evenly */
+  align-content: space-around; /* 垂直分布：start, end, center, stretch, space-around, space-between, space-evenly */
+}</code></pre>
+                    
+                    <h3>网格项属性</h3>
+                    
+                    <h4>1. grid-column-start/end 和 grid-row-start/end</h4>
+                    <p>这些属性控制网格项跨越多少列和行。</p>
+                    <pre><code>.item {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  /* 等同于 */
+  grid-column: 1 / 3;
+  
+  grid-row-start: 2;
+  grid-row-end: 4;
+  /* 等同于 */
+  grid-row: 2 / 4;
+}
+
+/* 使用span关键字 */
+.item {
+  grid-column: 1 / span 2; /* 从第1列开始，跨越2列 */
+  grid-row: 2 / span 3; /* 从第2行开始，跨越3行 */
+}</code></pre>
+                    
+                    <h4>2. grid-area</h4>
+                    <p>这个属性可以同时设置grid-row-start, grid-column-start, grid-row-end, grid-column-end，也可以用于引用grid-template-areas中定义的命名区域。</p>
+                    <pre><code>.item {
+  grid-area: 2 / 1 / 4 / 3; /* 行开始 / 列开始 / 行结束 / 列结束 */
+}
+
+/* 或者引用命名区域 */
+.item {
+  grid-area: header;
+}</code></pre>
+                    
+                    <h4>3. justify-self 和 align-self</h4>
+                    <p>这些属性控制单个网格项在其单元格中的水平和垂直对齐方式，覆盖容器的justify-items和align-items设置。</p>
+                    <pre><code>.item {
+  justify-self: center; /* 水平对齐：start, end, center, stretch */
+  align-self: end; /* 垂直对齐：start, end, center, stretch */
+}</code></pre>
+                    
+                    <h2>Grid布局实战</h2>
+                    
+                    <h3>示例1：基本的三列布局</h3>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-gap: 20px;
+}
+
+/* HTML结构 */
+<div class="container">
+  <div class="left-sidebar">左侧栏</div>
+  <div class="main-content">主内容</div>
+  <div class="right-sidebar">右侧栏</div>
+</div></code></pre>
+                    
+                    <h3>示例2：响应式网格布局</h3>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 20px;
+}
+
+/* 这个布局会自动调整列数，确保每列至少250px宽 */</code></pre>
+                    
+                    <h3>示例3：复杂的页面布局</h3>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 250px 1fr 200px;
+  grid-template-rows: 60px 1fr 50px;
+  grid-template-areas:
+    "header header header"
+    "sidebar main rightbar"
+    "footer footer footer";
+  min-height: 100vh;
+}
+
+.header {
+  grid-area: header;
+  background-color: #333;
+  color: white;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: #f5f5f5;
+}
+
+.main {
+  grid-area: main;
+  background-color: white;
+}
+
+.rightbar {
+  grid-area: rightbar;
+  background-color: #f5f5f5;
+}
+
+.footer {
+  grid-area: footer;
+  background-color: #333;
+  color: white;
+}
+
+/* 响应式调整 */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main"
+      "sidebar"
+      "rightbar"
+      "footer";
+  }
+}</code></pre>
+                    
+                    <h3>示例4：瀑布流布局</h3>
+                    <pre><code>.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 50px;
+  grid-gap: 10px;
+}
+
+.item-1 {
+  grid-row: span 1; /* 占1行 */
+}
+
+.item-2 {
+  grid-row: span 2; /* 占2行 */
+}
+
+.item-3 {
+  grid-row: span 3; /* 占3行 */
+}
+
+/* 注意：真正的瀑布流可能还需要JavaScript来动态计算高度 */</code></pre>
+                    
+                    <h2>Grid布局的高级技巧</h2>
+                    
+                    <h3>1. 使用minmax()函数</h3>
+                    <p><code>minmax()</code>函数允许我们设置一个范围值，网格轨道将在这个范围内调整大小。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) 3fr;
+  /* 第一列最小200px，最大1fr；第二列固定3fr */
+}</code></pre>
+                    
+                    <h3>2. 使用repeat()函数</h3>
+                    <p><code>repeat()</code>函数可以重复指定的模式，简化代码。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 等同于1fr 1fr 1fr 1fr */
+  
+  /* 结合minmax使用 */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}</code></pre>
+                    
+                    <h3>3. 使用auto-fill和auto-fit</h3>
+                    <p><code>auto-fill</code>和<code>auto-fit</code>关键字可以自动调整列数，使布局更灵活。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  /* auto-fill会尽可能多地创建列，即使没有足够的内容 */
+  
+  /* 或者 */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  /* auto-fit会调整现有列的大小，填充整个容器 */
+}</code></pre>
+                    
+                    <h3>4. 使用CSS Grid和Flexbox结合</h3>
+                    <p>Grid和Flexbox可以很好地结合使用，Grid用于整体布局，Flexbox用于组件内部的一维布局。</p>
+                    <pre><code>.container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-gap: 20px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content {
+  flex-grow: 1;
+}</code></pre>
+                    
+                    <h2>Grid布局的浏览器兼容性</h2>
+                    <p>CSS Grid布局在现代浏览器中有着良好的支持：</p>
+                    <ul>
+                        <li>Chrome 57+</li>
+                        <li>Firefox 52+</li>
+                        <li>Safari 10.1+</li>
+                        <li>Edge 16+</li>
+                        <li>IE不支持CSS Grid</li>
+                    </ul>
+                    <p>对于需要支持旧浏览器的项目，可以考虑使用Autoprefixer或提供回退方案。</p>
+                    
+                    <h2>总结</h2>
+                    <p>CSS Grid布局是一个强大的二维布局系统，它让我们能够轻松创建复杂而灵活的页面布局。通过掌握Grid布局的基本概念和属性，我们可以摆脱传统布局技术的限制，创建更加现代化的网页设计。</p>
+                    <p>Grid布局和Flexbox一起，代表了CSS布局的未来。它们提供了一种更加直观、更加灵活的方式来处理页面布局，让我们的工作变得更加轻松高效。</p>
+                    <p>如果你还没有开始使用Grid布局，我建议你立即开始尝试。它会彻底改变你处理CSS布局的方式，让你的代码更加简洁、更加可维护。</p>
+                </div>
+                
+                <div class="post-navigation">
+                    <div class="prev-post">
+                        <span>上一篇</span>
+                        <a href="react-hooks-guide.html">使用React Hooks构建现代化Web应用</a>
+                    </div>
+                    <div class="next-post">
+                        <span>下一篇</span>
+                        <a href="javascript-async-guide.html">JavaScript异步编程详解</a>
+                    </div>
+                </div>
+                
+                <div class="post-comments">
+                    <h3>评论</h3>
+                    <div class="comment-form">
+                        <h4>发表评论</h4>
+                        <form>
+                            <div class="form-group">
+                                <label for="comment-name">姓名</label>
+                                <input type="text" id="comment-name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment-email">邮箱</label>
+                                <input type="email" id="comment-email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment-content">评论内容</label>
+                                <textarea id="comment-content" name="comment" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">提交评论</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3><i class="fas fa-leaf"></i> 个人博客</h3>
+                    <p>探索技术与生活的交叉点</p>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="../index.html#about">关于我</a></li>
+                        <li><a href="../index.html#blog">博客</a></li>
+                        <li><a href="../index.html#contact">联系</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>关注我</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-weixin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 个人博客. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 引入JavaScript -->
+    <script src="../js/main.js"></script>
+</body>
+</html>
